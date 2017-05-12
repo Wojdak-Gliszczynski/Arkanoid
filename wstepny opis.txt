@@ -1,0 +1,20 @@
+Arkanoid - Projekt w WPF-ie
+
+Projekt ten to zrêcznoœciowa gra komputerowa typu arkanoid. Zadaniem gracza jest poruszanie siê platform¹ w kierunkach lewo-prawo w taki sposób, aby odbijaj¹ca siê od niej pi³ka zniszczy³a wszystkie cegie³ki na planszy. Po zniszczeniu wszystkich cegie³ek gra przejdzie do nastêpnego poziomu. W przypadku gdy gracz nie odbije pi³ki i ta wypadnie poza ekran, zostaje ona zniszczona. Gdy na planszy nie ma ju¿ ¿adnych pi³ek, gracz traci jedno ¿ycie i w zamian za nie, otrzymuje now¹ pi³kê.
+
+Cechy gry:
+-gra typu arkanoid
+-zestaw gotowych poziomów
+-losowe bonusy wypadaj¹ce ze zniszczonych cegie³ek
+-ró¿ne rodzaje cegie³ek
+-menu g³ówne
+-tabela najlepszych wyników
+-dŸwiêki w grze
+
+Osoby uczestnicz¹ce w tworzeniu projektu:
+-Rados³aw Wojdak
+-Adam Gliszczyñski
+
+Opis zadañ:
+-Rados³aw Wojdak napisze klasy odpowiedzialne za elementy widoczne w rozgrywce (takie jak pi³ka, cegie³ka, platforma, czy bonus) oraz za relacje pomiêdzy tymi elementami (zajmie siê ogólnym tworzeniem rozgrywki).
+-Adam Gliszczyñski napisze klasê odpowiedzialn¹ za kolizje w grze, stworzy menu gry, oraz tabelê najlepszych wyników, zajmie siê grafik¹ i dŸwiêkami w grze, oraz systemem tworzenia (oraz samym tworzeniem) poziomów.
