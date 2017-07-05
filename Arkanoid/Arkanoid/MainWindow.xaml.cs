@@ -16,17 +16,75 @@ using System.Windows.Threading;
 
 namespace Arkanoid
 {
-    public partial class Ball : Image
+    public partial class TransformingImage : Image
     {
-        public Ball()
+        public TransformingImage(Uri uri, Grid grid, int x = 0, int y = 0, double width = 32, double height = 32)
         {
-            BitmapImage bmp = new BitmapImage(new Uri("./Graphics/ball-0.png", UriKind.Relative));
+            BitmapImage bmp = new BitmapImage(uri);
             this.Source = bmp;
             this.HorizontalAlignment = HorizontalAlignment.Left;
             this.VerticalAlignment = VerticalAlignment.Top;
-            this.Width = 32;
-            this.Height = 32;
-            this.Margin = new Thickness(400 - this.Width / 2, 440 - this.Height / 2, 0.0, 0.0);
+            this.Width = width;
+            this.Height = height;
+            this.Margin = new Thickness(x, y, 0.0, 0.0);
+            grid.Children.Add(this);
+        }
+
+        public void Move(double right, double top)
+        {
+            Thickness margin = new Thickness();
+            margin = this.Margin;
+            margin.Left += right;
+            margin.Top += top;
+            this.Margin = margin;
+        }
+    }
+
+    public partial class Ball : TransformingImage
+    {
+        private double _speed;
+        private double _angle;   //W radianach
+
+        public Ball(Grid grid) : base(new Uri("./Graphics/ball-0.png", UriKind.Relative), grid, 384, 456)
+        {
+            _speed = 5;
+            _angle = (3.0 / 4.0) * Math.PI;
+        }
+    }
+
+    public partial class Platform
+    {
+        private TransformingImage _platformLeft, _platformMiddle, _platformRight;
+        private static double _lastMouseX;  //Zmienna wymagana gdy kursor wyjdzie poza ekran
+        private double _speed;
+
+        private void Move(double right, double top = 0.0)
+        {
+            _platformLeft.Move(right, top);
+            _platformMiddle.Move(right, top);
+            _platformRight.Move(right, top);
+        }
+
+        public Platform(Grid grid)
+        {
+            _platformLeft = new TransformingImage(new Uri("./Graphics/platform_left.png", UriKind.Relative), grid, 367, 552);
+            _platformMiddle = new TransformingImage(new Uri("./Graphics/platform_middle.png", UriKind.Relative), grid, 399, 552, 2);
+            _platformRight = new TransformingImage(new Uri("./Graphics/platform_right.png", UriKind.Relative), grid, 401, 552);
+
+            _speed = 5.0;
+        }
+
+        public void Control(Point mousePosition)
+        {
+            double platformX = _platformMiddle.Margin.Left + (_platformMiddle.Width / 2.0);
+
+            if (mousePosition.X > 0 && mousePosition.X < 800)
+                _lastMouseX = mousePosition.X;
+
+            if (_lastMouseX < platformX - _speed / 2.0)
+                Move(-_speed);
+            else if (_lastMouseX > platformX + _speed / 2.0)
+                Move(_speed);
         }
     }
 
@@ -35,9 +93,9 @@ namespace Arkanoid
     /// </summary>
     public partial class MainWindow : Window
     {
-        private double platformSpeed = 5.0;
-        private double lastMouseX;  //Zmienna wymagana gdy kursor wyjdzie poza ekran
-        
+        private Platform platform;
+        private Ball ball;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -46,45 +104,16 @@ namespace Arkanoid
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
             dispatcherTimer.Start();
+            //Platform
+            platform = new Platform(grid1);
             //Ball
-            Ball ball = new Ball();
-            grid1.Children.Add(ball);
-
+            ball = new Ball(grid1);
+            //grid1.Children.Add(ball);
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            PlatformControl();
-        }
-
-        private void move(ref Image img, double right, double top)
-        {
-            Thickness margin = new Thickness();
-            margin = img.Margin;
-            margin.Left += right;
-            margin.Top += top;
-            img.Margin = margin;
-        }
-
-        private void PlatformControl()
-        {
-            double platformX = platformMiddle.Margin.Left + (platformMiddle.Width / 2.0);
-            
-            if (Mouse.GetPosition(this).X > 0 && Mouse.GetPosition(this).X < 800)
-                lastMouseX = Mouse.GetPosition(this).X;
-
-            if (lastMouseX < platformX - platformSpeed / 2.0)
-            {
-                move(ref platformLeft, -platformSpeed, 0.0);
-                move(ref platformMiddle, -platformSpeed, 0.0);
-                move(ref platformRight, -platformSpeed, 0.0);
-            }
-            else if (lastMouseX > platformX + platformSpeed / 2.0)
-            {
-                move(ref platformLeft, platformSpeed, 0.0);
-                move(ref platformMiddle, platformSpeed, 0.0);
-                move(ref platformRight, platformSpeed, 0.0);
-            }
+            platform.Control(Mouse.GetPosition(this));
         }
     }
 }

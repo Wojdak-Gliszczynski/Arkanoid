@@ -6,9 +6,5 @@
         xmlns:local="clr-namespace:Arkanoid"
         mc:Ignorable="d"
         Title="MainWindow" Width="808" Height="631">
-    <Grid x:Name="grid1">
-        <Image x:Name="platformLeft" HorizontalAlignment="Left" Height="32" VerticalAlignment="Top" Width="32" Source="./Graphics/platform_left.png" Margin="367,552,0,0"/>
-        <Image x:Name="platformMiddle" HorizontalAlignment="Left" Height="32" VerticalAlignment="Top" Width="2" Source="./Graphics/platform_middle.png" Margin="399,552,0,0"/>
-        <Image x:Name="platformRight" HorizontalAlignment="Left" Height="32" VerticalAlignment="Top" Width="32" Source="./Graphics/platform_right.png" Margin="401,552,0,0"/>
-    </Grid>
+    <Grid x:Name="grid1"/>
 </Window>
