@@ -1,0 +1,14 @@
+﻿<Window x:Class="Arkanoid.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Arkanoid"
+        mc:Ignorable="d"
+        Title="MainWindow" Width="808" Height="631">
+    <Grid x:Name="grid1">
+        <Image x:Name="platformLeft" HorizontalAlignment="Left" Height="32" VerticalAlignment="Top" Width="32" Source="./Graphics/platform_left.png" Margin="367,552,0,0"/>
+        <Image x:Name="platformMiddle" HorizontalAlignment="Left" Height="32" VerticalAlignment="Top" Width="2" Source="./Graphics/platform_middle.png" Margin="399,552,0,0"/>
+        <Image x:Name="platformRight" HorizontalAlignment="Left" Height="32" VerticalAlignment="Top" Width="32" Source="./Graphics/platform_right.png" Margin="401,552,0,0"/>
+    </Grid>
+</Window>
