@@ -95,7 +95,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Graphics\ball-0.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Graphics\platform_left.png" />
     <Resource Include="Graphics\platform_middle.png" />

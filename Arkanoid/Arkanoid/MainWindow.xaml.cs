@@ -16,6 +16,20 @@ using System.Windows.Threading;
 
 namespace Arkanoid
 {
+    public partial class Ball : Image
+    {
+        public Ball()
+        {
+            BitmapImage bmp = new BitmapImage(new Uri("./Graphics/ball-0.png", UriKind.Relative));
+            this.Source = bmp;
+            this.HorizontalAlignment = HorizontalAlignment.Left;
+            this.VerticalAlignment = VerticalAlignment.Top;
+            this.Width = 32;
+            this.Height = 32;
+            this.Margin = new Thickness(400 - this.Width / 2, 440 - this.Height / 2, 0.0, 0.0);
+        }
+    }
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -23,14 +37,19 @@ namespace Arkanoid
     {
         private double platformSpeed = 5.0;
         private double lastMouseX;  //Zmienna wymagana gdy kursor wyjdzie poza ekran
-
+        
         public MainWindow()
         {
             InitializeComponent();
+            //Timer
             DispatcherTimer dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
             dispatcherTimer.Start();
+            //Ball
+            Ball ball = new Ball();
+            grid1.Children.Add(ball);
+
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
