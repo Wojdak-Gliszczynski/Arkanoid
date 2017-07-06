@@ -24,6 +24,7 @@ namespace Arkanoid
     {
         private Platform platform;
         private Ball ball;
+        private Brick[] brick;
 
         public MainWindow()
         {
@@ -37,6 +38,12 @@ namespace Arkanoid
             //Obiekty rozgrywki
             platform = new Platform(grid1);
             ball = new Ball(grid1);
+            brick = new Brick[5];
+            brick[0] = new Brick(grid1, 0, 1, 1);
+            brick[1] = new Brick(grid1, 1, 1, 2);
+            brick[2] = new Brick(grid1, 2, 2, 1);
+            brick[3] = new Brick(grid1, 3, 2, 2);
+            brick[4] = new Brick(grid1, 4, 4, 1);
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)

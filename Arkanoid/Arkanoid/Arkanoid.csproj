@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Brick.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="TransformingImage.cs" />
     <Page Include="MainWindow.xaml">
@@ -105,6 +106,18 @@
     <Resource Include="Graphics\platform_left.png" />
     <Resource Include="Graphics\platform_middle.png" />
     <Resource Include="Graphics\platform_right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Graphics\brick-0.png" />
+    <Resource Include="Graphics\brick-1.png" />
+    <Resource Include="Graphics\brick-2.png" />
+    <Resource Include="Graphics\brick-3.png" />
+    <Resource Include="Graphics\brick-4.png" />
+    <Resource Include="Graphics\brick-5.png" />
+    <Resource Include="Graphics\brick-6.png" />
+    <Resource Include="Graphics\brick-7.png" />
+    <Resource Include="Graphics\brick-8.png" />
+    <Resource Include="Graphics\brick-9.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
