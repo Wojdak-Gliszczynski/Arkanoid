@@ -19,15 +19,7 @@ namespace Arkanoid
             get { return _speed; }
             set { _speed = value; }
         }
-
-
-        private void Move(double x, double y = 0.0)
-        {
-            _platformLeft.Move(x, y);
-            _platformMiddle.Move(x, y);
-            _platformRight.Move(x, y);
-        }
-
+        //-------------------------------------------------------
         public Platform(Grid grid)
         {
             _platformLeft = new TransformingImage(new Uri("./Graphics/platform_left.png", UriKind.Relative), grid, 367, 552);
@@ -36,7 +28,14 @@ namespace Arkanoid
 
             _speed = 5.0;
         }
-
+        //-------------------------------------------------------
+        private void Move(double x, double y = 0.0)
+        {
+            _platformLeft.Move(x, y);
+            _platformMiddle.Move(x, y);
+            _platformRight.Move(x, y);
+        }
+        
         public void Control(Point mousePosition)
         {
             double platformX = _platformMiddle.Margin.Left + (_platformMiddle.Width / 2.0);
@@ -61,7 +60,17 @@ namespace Arkanoid
 
             if (collisionArea.IntersectsWith(ballArea))
             {
-                ball.Angle -= Math.PI;
+                double ballRelativeMiddleX = ballArea.Left + (ballArea.Width / 2.0) - collisionArea.Left;
+                double platformMiddleX = collisionArea.Width / 2.0;
+
+                double percent = Convert.ToDouble((ballRelativeMiddleX - platformMiddleX)) / (collisionArea.Width / 2.0);
+                if (percent > 0.8)
+                    percent = 0.8;
+                else if (percent < -0.8)
+                    percent = -0.8;
+
+                ball.Angle = ((3.0 / 2.0) * Math.PI) + percent * 0.5 * Math.PI;
+
                 ball.SetPosition(ball.Margin.Left, _platformMiddle.Margin.Top - _platformMiddle.Height);
             }
         }

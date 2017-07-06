@@ -27,13 +27,13 @@ namespace Arkanoid
             get { return _angle; }
             set { _angle = value % (2 * Math.PI); }
         }
-
+        //-------------------------------------------------------
         public Ball(Grid grid) : base(new Uri("./Graphics/ball-0.png", UriKind.Relative), grid, 384, 456)
         {
             Speed = 5;
             Angle = (1.0 / 4.0) * 2 * Math.PI;
         }
-
+        //-------------------------------------------------------
         public void Move()
         {
             double speedX = Math.Cos(Angle) * Speed;
