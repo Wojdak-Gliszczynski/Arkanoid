@@ -41,7 +41,10 @@ namespace Arkanoid
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
+            ball.Move();
             platform.Control(Mouse.GetPosition(this));
+
+            platform.Collisions(ref ball);
         }
     }
 }

@@ -14,11 +14,18 @@ namespace Arkanoid
         private static double _lastMouseX;  //Zmienna wymagana gdy kursor wyjdzie poza ekran
         private double _speed;
 
-        private void Move(double right, double top = 0.0)
+        public double Speed
         {
-            _platformLeft.Move(right, top);
-            _platformMiddle.Move(right, top);
-            _platformRight.Move(right, top);
+            get { return _speed; }
+            set { _speed = value; }
+        }
+
+
+        private void Move(double x, double y = 0.0)
+        {
+            _platformLeft.Move(x, y);
+            _platformMiddle.Move(x, y);
+            _platformRight.Move(x, y);
         }
 
         public Platform(Grid grid)
@@ -41,6 +48,22 @@ namespace Arkanoid
                 Move(-_speed);
             else if (_lastMouseX > platformX + _speed / 2.0)
                 Move(_speed);
+        }
+
+        public void Collisions(ref Ball ball)
+        {
+            double x = _platformLeft.Margin.Left;
+            double y = _platformLeft.Margin.Top;
+            double width = _platformRight.Margin.Left + _platformRight.Width - _platformLeft.Margin.Left;
+            double height = _platformLeft.Height;
+            Rect collisionArea = new Rect(x, y, width, height);
+            Rect ballArea = new Rect(ball.Margin.Left, ball.Margin.Top, ball.Width, ball.Height);
+
+            if (collisionArea.IntersectsWith(ballArea))
+            {
+                ball.Angle -= Math.PI;
+                ball.SetPosition(ball.Margin.Left, _platformMiddle.Margin.Top - _platformMiddle.Height);
+            }
         }
     }
 }

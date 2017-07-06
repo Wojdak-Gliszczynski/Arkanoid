@@ -24,12 +24,21 @@ namespace Arkanoid
             grid.Children.Add(this);
         }
 
-        public void Move(double right, double top)
+        public void Move(double x, double y)
         {
             Thickness margin = new Thickness();
             margin = this.Margin;
-            margin.Left += right;
-            margin.Top += top;
+            margin.Left += x;
+            margin.Top += y;
+            this.Margin = margin;
+        }
+
+        public void SetPosition(double x, double y)
+        {
+            Thickness margin = new Thickness();
+            margin = this.Margin;
+            margin.Left = x;
+            margin.Top = y;
             this.Margin = margin;
         }
     }
