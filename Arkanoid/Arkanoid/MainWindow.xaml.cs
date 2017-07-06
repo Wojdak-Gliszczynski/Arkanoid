@@ -23,9 +23,10 @@ namespace Arkanoid
     public partial class MainWindow : Window
     {
         private Platform platform;
-        private Ball ball;
-        private Brick[] brick;
-
+        private List<Ball> balls;
+        private List<Brick> bricks;
+        private Rect leftWall, rightWall, ceiling;
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -37,21 +38,50 @@ namespace Arkanoid
 
             //Obiekty rozgrywki
             platform = new Platform(grid1);
-            ball = new Ball(grid1);
-            brick = new Brick[5];
-            brick[0] = new Brick(grid1, 0, 1, 1);
-            brick[1] = new Brick(grid1, 1, 1, 2);
-            brick[2] = new Brick(grid1, 2, 2, 1);
-            brick[3] = new Brick(grid1, 3, 2, 2);
-            brick[4] = new Brick(grid1, 4, 4, 1);
+
+            balls = new List<Ball>();
+            balls.Add(new Ball(grid1));
+
+            bricks = new List<Brick>();
+            bricks.Add(new Brick(ref grid1, 0, 1, 1));
+            bricks.Add(new Brick(ref grid1, 1, 1, 2));
+            bricks.Add(new Brick(ref grid1, 2, 2, 1));
+            bricks.Add(new Brick(ref grid1, 3, 2, 2));
+            bricks.Add(new Brick(ref grid1, 4, 4, 1));
+
+            //Ścianki
+            leftWall = new Rect(0, 0, 160, 600);
+            rightWall = new Rect(640, 0, 160, 600);
+            ceiling = new Rect(0, 0, 800, 16);
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            ball.Move();
+            foreach (Ball ball in balls)
+                ball.Move();
+
+            foreach (Ball ball in balls)
+            {
+                if (ball.HasCollisionWith(leftWall))
+                    ball.Bounce(leftWall);
+                else if (ball.HasCollisionWith(rightWall))
+                    ball.Bounce(rightWall);
+                if (ball.HasCollisionWith(ceiling)) //Bez else, bo może mieć kolizje jednocześnie ze ścianą i sufitem
+                    ball.Bounce(ceiling);
+            }
+
+            for (int i = bricks.Count - 1; i >= 0; i--)
+            {
+                if (!bricks[i].Collisions(ref balls))
+                {
+                    grid1.Children.Remove(bricks[i]);
+                    bricks.Remove(bricks[i]);
+                }
+            }
+
             platform.Control(Mouse.GetPosition(this));
 
-            platform.Collisions(ref ball);
+            platform.Collisions(ref balls);
         }
     }
 }

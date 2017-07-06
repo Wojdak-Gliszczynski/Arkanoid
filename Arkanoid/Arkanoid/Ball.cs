@@ -10,7 +10,8 @@ namespace Arkanoid
 {
     class Ball : TransformingImage
     {
-        private Rect lastCollisionArea; //Obszar kolizji z poprzedniego ruchu
+        private Rect _lastCollisionArea; //Obszar kolizji z poprzedniego ruchu
+        private Rect _CollisionArea;
         private double _speed;
         private double _angle;   //W radianach
 
@@ -44,23 +45,30 @@ namespace Arkanoid
         //-------------------------------------------------------
         public void Move()
         {
-            lastCollisionArea = new Rect(Margin.Left, Margin.Top, Width, Height);
+            _lastCollisionArea = new Rect(Margin.Left, Margin.Top, Width, Height);
 
             double speedX = Math.Cos(Angle) * Speed;
             double speedY = Math.Sin(Angle) * Speed;
 
             this.Move(speedX, speedY);
+
+            _CollisionArea = new Rect(Margin.Left, Margin.Top, Width, Height);
         }
-        //-------------------------------------------------------
+
         public void Bounce(Rect rect)
         {
             //Z której części prostokąta się odbija (przejście między ćwiartkami)
-            if ((lastCollisionArea.Top >= rect.Bottom) || (lastCollisionArea.Bottom <= rect.Top))    //Odbija się od dolnej lub górnej części prostokąta
+            if ((_lastCollisionArea.Top >= rect.Bottom) || (_lastCollisionArea.Bottom <= rect.Top))    //Odbija się od dolnej lub górnej części prostokąta
                 Angle = Math.PI - (Angle - Math.PI);
-            else if ((lastCollisionArea.Right <= rect.Left) || (lastCollisionArea.Left >= rect.Right))   //Odbija się od lewej lub prawej części prostokąta
+            else if ((_lastCollisionArea.Right <= rect.Left) || (_lastCollisionArea.Left >= rect.Right))   //Odbija się od lewej lub prawej części prostokąta
                 Angle = Math.PI * 0.5 - (Angle - Math.PI * 0.5);
 
             Move(); //Wymagany, żeby piłka nie znajdywała się cały czas wewnątrz prostokąta
+        }
+
+        public bool HasCollisionWith(Rect rect)
+        {
+            return (_lastCollisionArea.IntersectsWith(rect));
         }
     }
 }

@@ -49,29 +49,33 @@ namespace Arkanoid
                 Move(_speed);
         }
 
-        public void Collisions(ref Ball ball)
+        public void Collisions(ref List <Ball> balls)
         {
             double x = _platformLeft.Margin.Left;
             double y = _platformLeft.Margin.Top;
             double width = _platformRight.Margin.Left + _platformRight.Width - _platformLeft.Margin.Left;
             double height = _platformLeft.Height;
             Rect collisionArea = new Rect(x, y, width, height);
-            Rect ballArea = new Rect(ball.Margin.Left, ball.Margin.Top, ball.Width, ball.Height);
 
-            if (collisionArea.IntersectsWith(ballArea))
+            foreach (Ball ball in balls)
             {
-                double ballRelativeMiddleX = ballArea.Left + (ballArea.Width / 2.0) - collisionArea.Left;
-                double platformMiddleX = collisionArea.Width / 2.0;
+                Rect ballArea = new Rect(ball.Margin.Left, ball.Margin.Top, ball.Width, ball.Height);
 
-                double percent = Convert.ToDouble((ballRelativeMiddleX - platformMiddleX)) / (collisionArea.Width / 2.0);
-                if (percent > 0.8)
-                    percent = 0.8;
-                else if (percent < -0.8)
-                    percent = -0.8;
+                if (collisionArea.IntersectsWith(ballArea))
+                {
+                    double ballRelativeMiddleX = ballArea.Left + (ballArea.Width / 2.0) - collisionArea.Left;
+                    double platformMiddleX = collisionArea.Width / 2.0;
 
-                ball.Angle = ((3.0 / 2.0) * Math.PI) + percent * 0.5 * Math.PI;
+                    double percent = Convert.ToDouble((ballRelativeMiddleX - platformMiddleX)) / (collisionArea.Width / 2.0);
+                    if (percent > 0.8)
+                        percent = 0.8;
+                    else if (percent < -0.8)
+                        percent = -0.8;
 
-                ball.SetPosition(ball.Margin.Left, _platformMiddle.Margin.Top - _platformMiddle.Height);
+                    ball.Angle = ((3.0 / 2.0) * Math.PI) + percent * 0.5 * Math.PI;
+
+                    ball.SetPosition(ball.Margin.Left, _platformMiddle.Margin.Top - _platformMiddle.Height);
+                }
             }
         }
     }
