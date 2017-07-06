@@ -11,7 +11,7 @@ namespace Arkanoid
     class Ball : TransformingImage
     {
         private Rect _lastCollisionArea; //Obszar kolizji z poprzedniego ruchu
-        private Rect _CollisionArea;
+        private Rect _collisionArea;    //Obszar kolizji teraz
         private double _speed;
         private double _angle;   //W radianach
 
@@ -52,7 +52,7 @@ namespace Arkanoid
 
             this.Move(speedX, speedY);
 
-            _CollisionArea = new Rect(Margin.Left, Margin.Top, Width, Height);
+            _collisionArea = new Rect(Margin.Left, Margin.Top, Width, Height);
         }
 
         public void Bounce(Rect rect)
@@ -68,7 +68,7 @@ namespace Arkanoid
 
         public bool HasCollisionWith(Rect rect)
         {
-            return (_lastCollisionArea.IntersectsWith(rect));
+            return (_collisionArea.IntersectsWith(rect));
         }
     }
 }
