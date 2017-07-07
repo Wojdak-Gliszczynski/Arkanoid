@@ -70,5 +70,10 @@ namespace Arkanoid
         {
             return (_collisionArea.IntersectsWith(rect));
         }
+
+        public bool IsDestroyed()
+        {
+            return (Margin.Top > 600 ? true : false);
+        }
     }
 }

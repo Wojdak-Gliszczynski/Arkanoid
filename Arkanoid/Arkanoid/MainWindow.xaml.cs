@@ -26,6 +26,7 @@ namespace Arkanoid
         private List<Ball> balls;
         private List<Brick> bricks;
         private Rect leftWall, rightWall, ceiling;
+        //private GameControl stats;
         
         public MainWindow()
         {
@@ -35,14 +36,6 @@ namespace Arkanoid
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
             dispatcherTimer.Start();
-
-            //Obiekty rozgrywki
-            platform = new Platform(ref grid1);
-
-            balls = new List<Ball>();
-            balls.Add(new Ball(grid1));
-
-            Level.LoadLevel(0, ref grid1, ref bricks);
 
             //Ścianki
             leftWall = new Rect(0, 0, 160, 600);
@@ -64,12 +57,25 @@ namespace Arkanoid
             rightWallImg.VerticalAlignment = VerticalAlignment.Top;
             rightWallImg.Source = bmp;
             grid1.Children.Add(rightWallImg);
+
+            //Start
+            GameControl.StartGame(ref grid1, ref platform, ref balls, ref bricks);
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            foreach (Ball ball in balls)
-                ball.Move();
+            GameControl.CheckGameState(ref grid1, ref platform, ref balls, ref bricks);
+            GameControl.RefreshStatistics(ref grid1);
+
+            for (int i = balls.Count - 1; i >= 0; i--)
+            {
+                balls[i].Move();
+                if (balls[i].IsDestroyed())
+                {
+                    grid1.Children.Remove(balls[i]);
+                    balls.Remove(balls[i]);
+                }
+            }
 
             foreach (Ball ball in balls)
             {

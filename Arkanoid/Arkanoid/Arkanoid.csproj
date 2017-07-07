@@ -58,6 +58,7 @@
     <Compile Include="Brick.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Platform.cs" />
+    <Compile Include="GameControl.cs" />
     <Compile Include="TransformingImage.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

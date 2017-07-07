@@ -13,6 +13,10 @@ namespace Arkanoid
     {
         static public bool LoadLevel(int levelID, ref Grid grid, ref List <Brick> bricks)
         {
+            if (bricks != null && bricks.Count != 0)
+                foreach (Brick brick in bricks)
+                    grid.Children.Remove(brick);
+
             bricks = new List<Brick>();
             try
             {

@@ -142,5 +142,17 @@ namespace Arkanoid
 
             refreshSize();
         }
+
+        public void RemoveFromGrid(ref Grid grid)
+        {
+            if (grid.Children.Contains(_platformLeft))
+                grid.Children.Remove(_platformLeft);
+
+            if (grid.Children.Contains(_platformMiddle))
+                grid.Children.Remove(_platformMiddle);
+
+            if (grid.Children.Contains(_platformRight))
+                grid.Children.Remove(_platformRight);
+        }
     }
 }
