@@ -22,7 +22,7 @@ namespace Arkanoid
             get { return _speed; }
             set
             {
-                if (value > 0)
+                if (value >= 2 && value <= 6)
                     _speed = value;
             }
         }
@@ -44,6 +44,7 @@ namespace Arkanoid
             Speed = 4;
             Angle = (1.0 / 4.0) * 2 * Math.PI;
             _sizeDegree = 3;
+            AdjustSize();
             _gridAddress = grid;
         }
 
@@ -51,7 +52,8 @@ namespace Arkanoid
         {
             Speed = ball.Speed;
             Angle = ball.Angle;
-            _sizeDegree = 3;
+            _sizeDegree = ball._sizeDegree;
+            AdjustSize();
             _gridAddress = ball._gridAddress;
 
             //Zmiana toru lotu obu piłeczek

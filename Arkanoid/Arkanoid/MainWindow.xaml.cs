@@ -25,6 +25,7 @@ namespace Arkanoid
         private Platform platform;
         private List<Ball> balls;
         private List<Brick> bricks;
+        private List<Bonus> bonuses;
         private Rect leftWall, rightWall, ceiling;
         //private GameControl stats;
         
@@ -59,12 +60,12 @@ namespace Arkanoid
             grid1.Children.Add(rightWallImg);
 
             //Start
-            GameControl.StartGame(ref grid1, ref platform, ref balls, ref bricks);
+            GameControl.StartGame(ref grid1, ref platform, ref balls, ref bricks, ref bonuses);
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            GameControl.CheckGameState(ref grid1, ref platform, ref balls, ref bricks);
+            GameControl.CheckGameState(ref grid1, ref platform, ref balls, ref bricks, ref bonuses);
             GameControl.RefreshStatistics(ref grid1);
 
             for (int i = balls.Count - 1; i >= 0; i--)
@@ -91,14 +92,20 @@ namespace Arkanoid
             {
                 if (!bricks[i].Collisions(ref balls))
                 {
+                    if (Bonus.OrCreate())
+                        bonuses.Add(new Bonus(grid1, Bonus.RandomID(), bricks[i].Margin.Left, bricks[i].Margin.Top));
+
                     grid1.Children.Remove(bricks[i]);
                     bricks.Remove(bricks[i]);
                 }
             }
 
+            foreach (Bonus bonus in bonuses)
+                bonus.Move();
+
             platform.Control(Mouse.GetPosition(this));
 
-            platform.Collisions(ref balls);
+            platform.Collisions(ref grid1, ref balls, ref bricks, ref bonuses);
         }
     }
 }

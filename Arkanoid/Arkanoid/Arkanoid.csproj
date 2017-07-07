@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Bonus.cs" />
     <Compile Include="Brick.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Platform.cs" />
@@ -92,7 +93,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="Levels\lvl-0.lvl" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -124,6 +124,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Graphics\background_wall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Graphics\bonus-0.png" />
+    <Resource Include="Graphics\bonus-1.png" />
+    <Resource Include="Graphics\bonus-10.png" />
+    <Resource Include="Graphics\bonus-11.png" />
+    <Resource Include="Graphics\bonus-12.png" />
+    <Resource Include="Graphics\bonus-2.png" />
+    <Resource Include="Graphics\bonus-3.png" />
+    <Resource Include="Graphics\bonus-4.png" />
+    <Resource Include="Graphics\bonus-5.png" />
+    <Resource Include="Graphics\bonus-6.png" />
+    <Resource Include="Graphics\bonus-7.png" />
+    <Resource Include="Graphics\bonus-8.png" />
+    <Resource Include="Graphics\bonus-9.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

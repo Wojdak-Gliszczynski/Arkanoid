@@ -70,7 +70,7 @@ namespace Arkanoid
             }
         }
 
-        public void Collisions(ref List <Ball> balls)
+        public void Collisions(ref Grid grid, ref List <Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses)
         {
             double x = _platformLeft.Margin.Left;
             double y = _platformLeft.Margin.Top;
@@ -96,6 +96,19 @@ namespace Arkanoid
                     ball.Angle = ((3.0 / 2.0) * Math.PI) + percent * 0.5 * Math.PI;
 
                     ball.SetPosition(ball.Margin.Left, _platformMiddle.Margin.Top - ball.Height);
+                }
+            }
+
+            for (int i = bonuses.Count - 1; i >= 0; i--)
+            {
+                Rect bonusArea = new Rect(bonuses[i].Margin.Left, bonuses[i].Margin.Top, bonuses[i].Width, bonuses[i].Height);
+
+                if (collisionArea.IntersectsWith(bonusArea))
+                {
+                    var thisPlatform = this;
+                    bonuses[i].UseBonus(ref grid, ref thisPlatform, ref balls);
+                    if (bonuses.Count > 0)  //W przypadku podniesienia bonusu przez który znikają wszystkie bonusy (np. utrata życia)
+                        bonuses.RemoveAt(i);
                 }
             }
         }

@@ -11,13 +11,18 @@ namespace Arkanoid
 {
     class Level
     {
-        static public bool LoadLevel(int levelID, ref Grid grid, ref List <Brick> bricks)
+        static public bool LoadLevel(int levelID, ref Grid grid, ref List <Brick> bricks, ref List<Bonus> bonuses)
         {
             if (bricks != null && bricks.Count != 0)
                 foreach (Brick brick in bricks)
                     grid.Children.Remove(brick);
-
             bricks = new List<Brick>();
+
+            if (bonuses != null && bonuses.Count != 0)
+                foreach (Bonus bonus in bonuses)
+                    grid.Children.Remove(bonus);
+            bonuses = new List<Bonus>();
+
             try
             {
                 StreamReader file = new StreamReader(System.IO.Path.GetFullPath("Levels/lvl-" + levelID + ".lvl"));

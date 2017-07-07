@@ -18,7 +18,7 @@ namespace Arkanoid
         static private Label _labelLife;
         static private Label _labelLevel;
 
-        static public void StartGame(ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks)
+        static public void StartGame(ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses)
         {
             _score = 0;
             _life = 3;
@@ -39,26 +39,29 @@ namespace Arkanoid
             RefreshStatistics(ref grid);
 
             //Uruchom poziom
-            StartLevel(ref grid, ref platform, ref balls, ref bricks);
+            StartLevel(ref grid, ref platform, ref balls, ref bricks, ref bonuses);
         }
 
-        static public void CheckGameState(ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List <Brick> bricks)
+        static public void CheckGameState(ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List <Brick> bricks, ref List<Bonus> bonuses)
         {
             if (bricks.Count == 0)
             {
-                if (!NextLevel(ref grid, ref platform, ref balls, ref bricks))
+                if (!NextLevel(ref grid, ref platform, ref balls, ref bricks, ref bonuses))
                     GameOver();
             }
             if (balls.Count == 0)
-            {
-                _life--;
-                if (_life == 0)
-                    GameOver();
-                StartLevel(ref grid, ref platform, ref balls, ref bricks);
-            }
+                LostLife(ref grid, ref platform, ref balls, ref bricks, ref bonuses);
         }
 
-        static public bool StartLevel(ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks)
+        static public void LostLife(ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses)
+        {
+            _life--;
+            if (_life == 0)
+                GameOver();
+            StartLevel(ref grid, ref platform, ref balls, ref bricks, ref bonuses);
+        }
+
+        static public bool StartLevel(ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses)
         {
             //Czyszczenie grafik z siatki
             if (platform != null)
@@ -73,18 +76,23 @@ namespace Arkanoid
             balls = new List<Ball>();
             balls.Add(new Ball(grid));
 
-            return (Level.LoadLevel(_level - 1, ref grid, ref bricks) ? true : false);
+            return (Level.LoadLevel(_level - 1, ref grid, ref bricks, ref bonuses) ? true : false);
         }
 
-        static public bool NextLevel(ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks)
+        static public bool NextLevel(ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses)
         {
             _level++;
-            return (StartLevel(ref grid, ref platform, ref balls, ref bricks) ? true : false);
+            return (StartLevel(ref grid, ref platform, ref balls, ref bricks, ref bonuses) ? true : false);
         }
 
-        static public void AddScore(int points)
+        static public void AddPoints(int points)
         {
             _score += points;
+        }
+
+        static public void AddLife()
+        {
+            _life++;
         }
 
         static public void RefreshStatistics(ref Grid grid)

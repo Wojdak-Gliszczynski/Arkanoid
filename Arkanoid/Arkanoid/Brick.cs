@@ -26,7 +26,7 @@ namespace Arkanoid
                 if (collisionsArea.IntersectsWith(ballArea))
                 {
                     ball.Bounce(collisionsArea);
-                    GameControl.AddScore(10);
+                    GameControl.AddPoints(25);
                     return false;
                 }
             }
