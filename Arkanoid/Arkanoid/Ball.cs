@@ -14,6 +14,7 @@ namespace Arkanoid
         private Rect _collisionArea;    //Obszar kolizji teraz
         private double _speed;
         private double _angle;   //W radianach
+        private int _sizeDegree;
         Grid _gridAddress;  //Dla konstruktora kopiującego
 
         public double Speed
@@ -42,6 +43,7 @@ namespace Arkanoid
         {
             Speed = 4;
             Angle = (1.0 / 4.0) * 2 * Math.PI;
+            _sizeDegree = 3;
             _gridAddress = grid;
         }
 
@@ -49,10 +51,12 @@ namespace Arkanoid
         {
             Speed = ball.Speed;
             Angle = ball.Angle;
+            _sizeDegree = 3;
+            _gridAddress = ball._gridAddress;
 
+            //Zmiana toru lotu obu piłeczek
             ball.Angle -= Math.PI * 0.25;
             Angle += Math.PI * 0.25;
-            _gridAddress = ball._gridAddress;
         }
         //-------------------------------------------------------
         public void Move()
@@ -86,6 +90,45 @@ namespace Arkanoid
         public bool IsDestroyed()
         {
             return (Margin.Top > 600 ? true : false);
+        }
+
+        private void AdjustSize()
+        {
+            if (_sizeDegree < 1)
+                _sizeDegree = 1;
+            else if (_sizeDegree > 5)
+                _sizeDegree = 5;
+
+            switch (_sizeDegree)
+            {
+                case 1: ChangeSize(0.25); break;
+                case 2: ChangeSize(0.5); break;
+                case 3: ChangeSize(1.0); break;
+                case 4: ChangeSize(1.5); break;
+                case 5: ChangeSize(2.0); break;
+            }
+        }
+
+        private void ChangeSize(double scale)
+        {
+            double lastSize = Width;
+
+            Width = 16 * scale;
+            Height = 16 * scale;
+            
+            Margin = new Thickness(Margin.Left - (Width - lastSize), Margin.Top - (Height - lastSize), 0, 0);
+        }
+
+        public void SizeUp()
+        {
+            _sizeDegree++;
+            AdjustSize();
+        }
+
+        public void SizeDown()
+        {
+            _sizeDegree--;
+            AdjustSize();
         }
     }
 }

@@ -29,8 +29,8 @@ namespace Arkanoid
             _platformMiddle = new TransformingImage(new Uri("./Graphics/platform_middle.png", UriKind.Relative), grid, 300, 552, 0);
             _platformRight = new TransformingImage(new Uri("./Graphics/platform_right.png", UriKind.Relative), grid, 301, 552);
 
-            refreshPlatformGraphics(grid.Width / 2);
-            refreshSize();
+            RefreshPlatformGraphics(grid.Width / 2);
+            RefreshSize();
 
             _speed = 3;
         }
@@ -95,17 +95,17 @@ namespace Arkanoid
 
                     ball.Angle = ((3.0 / 2.0) * Math.PI) + percent * 0.5 * Math.PI;
 
-                    ball.SetPosition(ball.Margin.Left, _platformMiddle.Margin.Top - _platformMiddle.Height);
+                    ball.SetPosition(ball.Margin.Left, _platformMiddle.Margin.Top - ball.Height);
                 }
             }
         }
 
-        public int sizeToPixels(int sizeDegree)
+        public int SizeToPixels(int sizeDegree)
         {
             return (sizeDegree - 1) * 25;
         }
 
-        public void refreshPlatformGraphics(double platformCenter)
+        public void RefreshPlatformGraphics(double platformCenter)
         {
             double middleX = Convert.ToInt32(platformCenter - _platformMiddle.Width / 2.0);
             double leftX = Convert.ToInt32(middleX - _platformMiddle.Width - _platformLeft.Width);
@@ -116,31 +116,31 @@ namespace Arkanoid
             _platformRight.Margin = new Thickness(rightX, 552, 0, 0);
         }
 
-        public void refreshSize()
+        public void RefreshSize()
         {
-            System.Windows.Media.ScaleTransform st = new System.Windows.Media.ScaleTransform(sizeToPixels(_sizeDegree) + 2, 1, 1, 1);
-            _platformMiddle.Width = sizeToPixels(_sizeDegree);
+            System.Windows.Media.ScaleTransform st = new System.Windows.Media.ScaleTransform(SizeToPixels(_sizeDegree) + 2, 1, 1, 1);
+            _platformMiddle.Width = SizeToPixels(_sizeDegree);
             _platformMiddle.RenderTransform = st;
 
-            refreshPlatformGraphics(_platformMiddle.Margin.Left + _platformMiddle.Width / 2.0);
+            RefreshPlatformGraphics(_platformMiddle.Margin.Left + _platformMiddle.Width / 2.0);
         }
 
-        public void sizeUp()
+        public void SizeUp()
         {
             _sizeDegree++;
             if (_sizeDegree > 5)
                 _sizeDegree = 5;
 
-            refreshSize();
+            RefreshSize();
         }
 
-        public void sizeDown()
+        public void SizeDown()
         {
             _sizeDegree--;
             if (_sizeDegree < 1)
                 _sizeDegree = 1;
 
-            refreshSize();
+            RefreshSize();
         }
 
         public void RemoveFromGrid(ref Grid grid)
