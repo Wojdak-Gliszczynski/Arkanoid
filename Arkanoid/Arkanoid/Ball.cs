@@ -14,13 +14,14 @@ namespace Arkanoid
         private Rect _collisionArea;    //Obszar kolizji teraz
         private double _speed;
         private double _angle;   //W radianach
+        Grid _gridAddress;  //Dla konstruktora kopiującego
 
         public double Speed
         {
             get { return _speed; }
             set
             {
-                if (value >= 0)
+                if (value > 0)
                     _speed = value;
             }
         }
@@ -41,6 +42,17 @@ namespace Arkanoid
         {
             Speed = 4;
             Angle = (1.0 / 4.0) * 2 * Math.PI;
+            _gridAddress = grid;
+        }
+
+        public Ball(Ball ball) : base(new Uri("./Graphics/ball-0.png", UriKind.Relative), ball._gridAddress, ball.Margin.Left, ball.Margin.Top, ball.Width, ball.Height)
+        {
+            Speed = ball.Speed;
+            Angle = ball.Angle;
+
+            ball.Angle -= Math.PI * 0.25;
+            Angle += Math.PI * 0.25;
+            _gridAddress = ball._gridAddress;
         }
         //-------------------------------------------------------
         public void Move()

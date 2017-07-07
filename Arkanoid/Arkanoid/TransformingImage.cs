@@ -12,7 +12,7 @@ namespace Arkanoid
 {
     class TransformingImage : Image
     {
-        public TransformingImage(Uri uri, Grid grid, int x = 0, int y = 0, double width = 16, double height = 16)
+        public TransformingImage(Uri uri, Grid grid, double x = 0, double y = 0, double width = 16, double height = 16)
         {
             BitmapImage bmp = new BitmapImage(uri);
             this.Source = bmp;
