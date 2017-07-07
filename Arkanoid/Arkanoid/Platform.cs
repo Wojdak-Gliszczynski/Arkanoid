@@ -13,6 +13,7 @@ namespace Arkanoid
         private TransformingImage _platformLeft, _platformMiddle, _platformRight;
         private static double _lastMouseX;  //Zmienna wymagana gdy kursor wyjdzie poza ekran
         private double _speed;
+        private int _sizeDegree;
 
         public double Speed
         {
@@ -22,19 +23,16 @@ namespace Arkanoid
         //-------------------------------------------------------
         public Platform(ref Grid grid)
         {
+            _sizeDegree = 3;
+
             _platformLeft = new TransformingImage(new Uri("./Graphics/platform_left.png", UriKind.Relative), grid, 268, 552);
-            _platformMiddle = new TransformingImage(new Uri("./Graphics/platform_middle.png", UriKind.Relative), grid, 300, 552, 1);
+            _platformMiddle = new TransformingImage(new Uri("./Graphics/platform_middle.png", UriKind.Relative), grid, 300, 552, 0);
             _platformRight = new TransformingImage(new Uri("./Graphics/platform_right.png", UriKind.Relative), grid, 301, 552);
 
-            double middleX = Convert.ToInt32(grid.Width / 2.0 - _platformMiddle.Width / 2.0);
-            double leftX = Convert.ToInt32(middleX - _platformLeft.Width);
-            double rightX = Convert.ToInt32(middleX + _platformMiddle.Width);
+            refreshPlatformGraphics(grid.Width / 2);
+            refreshSize();
 
-            _platformLeft.SetPosition(leftX, 552);
-            _platformMiddle.SetPosition(middleX, 552);
-            _platformRight.SetPosition(rightX, 552);
-
-            _speed = 5.0;
+            _speed = 3;
         }
         //-------------------------------------------------------
         private void Move(double x, double y = 0.0)
@@ -47,13 +45,13 @@ namespace Arkanoid
         private void SetPosition(double x, double y = 552.0)
         {
             _platformLeft.SetPosition(x, y);
-            _platformMiddle.SetPosition(x + _platformLeft.Width, y);
+            _platformMiddle.SetPosition(x + _platformLeft.Width + _platformMiddle.Width, y);
             _platformRight.SetPosition(x + _platformLeft.Width + _platformMiddle.Width, y);
         }
 
         public void Control(Point mousePosition)
         {
-            double platformX = _platformMiddle.Margin.Left + (_platformMiddle.Width / 2.0);
+            double platformX = _platformMiddle.Margin.Left - (_platformMiddle.Width / 2.0);
 
             if (mousePosition.X > 0 && mousePosition.X < 800)
                 _lastMouseX = mousePosition.X;
@@ -61,14 +59,14 @@ namespace Arkanoid
             if (_lastMouseX < platformX - _speed / 2.0)
             {
                 Move(-_speed);
-                if (_platformLeft.Margin.Left < 158)
-                    SetPosition(158);
+                if (_platformLeft.Margin.Left < 160)
+                    SetPosition(160);
             }
             else if (_lastMouseX > platformX + _speed / 2.0)
             { 
                 Move(_speed);
-                if (_platformRight.Margin.Left + _platformRight.Width > 638)
-                    SetPosition(638 - _platformRight.Width - _platformMiddle.Width - _platformLeft.Width);
+                if (_platformRight.Margin.Left + _platformRight.Width > 640)
+                    SetPosition(640 - _platformRight.Width - _platformMiddle.Width - _platformLeft.Width);
             }
         }
 
@@ -100,6 +98,49 @@ namespace Arkanoid
                     ball.SetPosition(ball.Margin.Left, _platformMiddle.Margin.Top - _platformMiddle.Height);
                 }
             }
+        }
+
+        public int sizeToPixels(int sizeDegree)
+        {
+            return (sizeDegree - 1) * 25;
+        }
+
+        public void refreshPlatformGraphics(double platformCenter)
+        {
+            double middleX = Convert.ToInt32(platformCenter - _platformMiddle.Width / 2.0);
+            double leftX = Convert.ToInt32(middleX - _platformMiddle.Width - _platformLeft.Width);
+            double rightX = Convert.ToInt32(middleX - _platformMiddle.Width + _platformMiddle.Width);
+
+            _platformLeft.Margin = new Thickness(leftX, 552, 0, 0);
+            _platformMiddle.Margin = new Thickness(middleX, 552, 0, 0);
+            _platformRight.Margin = new Thickness(rightX, 552, 0, 0);
+        }
+
+        public void refreshSize()
+        {
+            System.Windows.Media.ScaleTransform st = new System.Windows.Media.ScaleTransform(sizeToPixels(_sizeDegree) + 2, 1, 1, 1);
+            _platformMiddle.Width = sizeToPixels(_sizeDegree);
+            _platformMiddle.RenderTransform = st;
+
+            refreshPlatformGraphics(_platformMiddle.Margin.Left + _platformMiddle.Width / 2.0);
+        }
+
+        public void sizeUp()
+        {
+            _sizeDegree++;
+            if (_sizeDegree > 5)
+                _sizeDegree = 5;
+
+            refreshSize();
+        }
+
+        public void sizeDown()
+        {
+            _sizeDegree--;
+            if (_sizeDegree < 1)
+                _sizeDegree = 1;
+
+            refreshSize();
         }
     }
 }
