@@ -56,6 +56,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Brick.cs" />
+    <Compile Include="Level.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="TransformingImage.cs" />
     <Page Include="MainWindow.xaml">
@@ -90,6 +91,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Levels\lvl-0.lvl" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

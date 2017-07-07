@@ -20,11 +20,19 @@ namespace Arkanoid
             set { _speed = value; }
         }
         //-------------------------------------------------------
-        public Platform(Grid grid)
+        public Platform(ref Grid grid)
         {
-            _platformLeft = new TransformingImage(new Uri("./Graphics/platform_left.png", UriKind.Relative), grid, 367, 552);
-            _platformMiddle = new TransformingImage(new Uri("./Graphics/platform_middle.png", UriKind.Relative), grid, 399, 552, 2);
-            _platformRight = new TransformingImage(new Uri("./Graphics/platform_right.png", UriKind.Relative), grid, 401, 552);
+            _platformLeft = new TransformingImage(new Uri("./Graphics/platform_left.png", UriKind.Relative), grid, 268, 552);
+            _platformMiddle = new TransformingImage(new Uri("./Graphics/platform_middle.png", UriKind.Relative), grid, 300, 552, 1);
+            _platformRight = new TransformingImage(new Uri("./Graphics/platform_right.png", UriKind.Relative), grid, 301, 552);
+
+            double middleX = Convert.ToInt32(grid.Width / 2.0 - _platformMiddle.Width / 2.0);
+            double leftX = Convert.ToInt32(middleX - _platformLeft.Width);
+            double rightX = Convert.ToInt32(middleX + _platformMiddle.Width);
+
+            _platformLeft.SetPosition(leftX, 552);
+            _platformMiddle.SetPosition(middleX, 552);
+            _platformRight.SetPosition(rightX, 552);
 
             _speed = 5.0;
         }

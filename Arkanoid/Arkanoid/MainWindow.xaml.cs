@@ -37,17 +37,15 @@ namespace Arkanoid
             dispatcherTimer.Start();
 
             //Obiekty rozgrywki
-            platform = new Platform(grid1);
+            platform = new Platform(ref grid1);
 
             balls = new List<Ball>();
             balls.Add(new Ball(grid1));
 
-            bricks = new List<Brick>();
-            for (int i = 0; i < 15; i++)
-                bricks.Add(new Brick(ref grid1, Convert.ToUInt16(i % 10), i + 1, 1));
-            
+            Level.LoadLevel(0, ref grid1, ref bricks);
+
             //Ścianki
-            leftWall = new Rect(0, 0, 158, 600);
+            leftWall = new Rect(0, 0, 160, 600);
             rightWall = new Rect(640, 0, 160, 600);
             ceiling = new Rect(0, 0, 800, 16);
 
@@ -61,7 +59,7 @@ namespace Arkanoid
             grid1.Children.Add(leftWallImg);
 
             Image rightWallImg = new Image();
-            rightWallImg.Margin = new Thickness(638, 0, 0, 0);
+            rightWallImg.Margin = new Thickness(640, 0, 0, 0);
             rightWallImg.HorizontalAlignment = HorizontalAlignment.Left;
             rightWallImg.VerticalAlignment = VerticalAlignment.Top;
             rightWallImg.Source = bmp;
