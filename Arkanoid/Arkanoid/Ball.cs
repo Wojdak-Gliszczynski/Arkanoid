@@ -39,7 +39,7 @@ namespace Arkanoid
         //-------------------------------------------------------
         public Ball(Grid grid) : base(new Uri("./Graphics/ball-0.png", UriKind.Relative), grid, 384, 456)
         {
-            Speed = 5;
+            Speed = 4;
             Angle = (1.0 / 4.0) * 2 * Math.PI;
         }
         //-------------------------------------------------------

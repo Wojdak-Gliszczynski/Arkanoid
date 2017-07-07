@@ -5,6 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Arkanoid"
         mc:Ignorable="d"
-        Title="Arkanoid" Width="808" Height="631" ResizeMode="NoResize">
+        Title="Arkanoid" Width="813" Height="631" ResizeMode="NoResize">
     <Grid x:Name="grid1"/>
 </Window>

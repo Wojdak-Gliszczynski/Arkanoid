@@ -12,7 +12,7 @@ namespace Arkanoid
     {
         Grid grid;
 
-        public Brick(ref Grid grid, ushort colorID, int xOnGrid, int yOnGrid) : base(new Uri("./Graphics/brick-" + colorID + ".png", UriKind.Relative), grid, 160 + xOnGrid * 32 - 32, yOnGrid * 16, 32, 16)
+        public Brick(ref Grid grid, ushort colorID, int xOnGrid, int yOnGrid) : base(new Uri("./Graphics/brick-" + colorID + ".png", UriKind.Relative), grid, 160 + xOnGrid * 32 - 34, yOnGrid * 16, 32, 16)
         {
             this.grid = grid;
         }

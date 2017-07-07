@@ -47,19 +47,23 @@ namespace Arkanoid
                 bricks.Add(new Brick(ref grid1, Convert.ToUInt16(i % 10), i + 1, 1));
             
             //Ścianki
-            leftWall = new Rect(0, 0, 160, 600);
+            leftWall = new Rect(0, 0, 158, 600);
             rightWall = new Rect(640, 0, 160, 600);
             ceiling = new Rect(0, 0, 800, 16);
 
             BitmapImage bmp = new BitmapImage(new Uri("./Graphics/background_wall.png", UriKind.Relative));
 
             Image leftWallImg = new Image();
-            leftWallImg.Margin = new Thickness(-632, 0, 0, 0);
+            leftWallImg.Margin = new Thickness(0, 0, 0, 0);
+            leftWallImg.HorizontalAlignment = HorizontalAlignment.Left;
+            leftWallImg.VerticalAlignment = VerticalAlignment.Top;
             leftWallImg.Source = bmp;
             grid1.Children.Add(leftWallImg);
 
             Image rightWallImg = new Image();
-            rightWallImg.Margin = new Thickness(632, 0, 0, 0);
+            rightWallImg.Margin = new Thickness(638, 0, 0, 0);
+            rightWallImg.HorizontalAlignment = HorizontalAlignment.Left;
+            rightWallImg.VerticalAlignment = VerticalAlignment.Top;
             rightWallImg.Source = bmp;
             grid1.Children.Add(rightWallImg);
         }

@@ -35,7 +35,14 @@ namespace Arkanoid
             _platformMiddle.Move(x, y);
             _platformRight.Move(x, y);
         }
-        
+
+        private void SetPosition(double x, double y = 552.0)
+        {
+            _platformLeft.SetPosition(x, y);
+            _platformMiddle.SetPosition(x + _platformLeft.Width, y);
+            _platformRight.SetPosition(x + _platformLeft.Width + _platformMiddle.Width, y);
+        }
+
         public void Control(Point mousePosition)
         {
             double platformX = _platformMiddle.Margin.Left + (_platformMiddle.Width / 2.0);
@@ -44,9 +51,17 @@ namespace Arkanoid
                 _lastMouseX = mousePosition.X;
 
             if (_lastMouseX < platformX - _speed / 2.0)
+            {
                 Move(-_speed);
+                if (_platformLeft.Margin.Left < 158)
+                    SetPosition(158);
+            }
             else if (_lastMouseX > platformX + _speed / 2.0)
+            { 
                 Move(_speed);
+                if (_platformRight.Margin.Left + _platformRight.Width > 638)
+                    SetPosition(638 - _platformRight.Width - _platformMiddle.Width - _platformLeft.Width);
+            }
         }
 
         public void Collisions(ref List <Ball> balls)
