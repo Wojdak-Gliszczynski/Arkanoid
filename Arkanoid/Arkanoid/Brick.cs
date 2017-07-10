@@ -11,11 +11,21 @@ namespace Arkanoid
 {
     class Brick : TransformingImage
     {
-        ushort _typeID;
-        ushort _colorID;
+        private ushort _typeID;
+        private ushort _colorID;
         
-        enum BrickType : ushort { Normal = 1, Reinforced };
-        enum BrickColor : ushort { Black = 1, Red, Orange, Yellow, Green, Cyan, Blue, Purple, Magenta, White };
+        public enum BrickType : ushort { Normal = 1, Reinforced, Indestructible };
+        public enum BrickColor : ushort { Black = 1, Red, Orange, Yellow, Green, Cyan, Blue, Purple, Magenta, White };
+
+        public BrickType Type
+        {
+            get { return (BrickType)_typeID; }
+        }
+
+        public BrickColor Color
+        {
+            get { return (BrickColor)_colorID; }
+        }
 
         public Brick(ref Grid grid, ushort typeID, ushort colorID, int xOnGrid, int yOnGrid) : base(GetPath(typeID, colorID), grid, 160 + xOnGrid * 32 - 32, yOnGrid * 16, 32, 16)
         {
@@ -28,8 +38,9 @@ namespace Arkanoid
             string path = "./Graphics/";
             switch(typeID)
             {
-                case 1: path += "brick-"; break;
-                case 2: path += "reinforced_brick-"; break;
+                case (int)BrickType.Normal: path += "brick-"; break;
+                case (int)BrickType.Reinforced: path += "reinforced_brick-"; break;
+                case (int)BrickType.Indestructible: path += "indestructible_brick-"; break;
             }
             path += colorID + ".png";
 

@@ -44,7 +44,12 @@ namespace Arkanoid
 
         static public void CheckGameState(ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List <Brick> bricks, ref List<Bonus> bonuses)
         {
-            if (bricks.Count == 0)
+            ushort destructibleBricksCount = 0;
+            foreach (Brick brick in bricks)
+                if (brick.Type != Brick.BrickType.Indestructible)
+                    destructibleBricksCount++;
+
+            if (destructibleBricksCount == 0)
             {
                 if (!NextLevel(ref grid, ref platform, ref balls, ref bricks, ref bonuses))
                     GameOver();
