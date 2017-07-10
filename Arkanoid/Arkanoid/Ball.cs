@@ -60,6 +60,15 @@ namespace Arkanoid
             ball.Angle -= Math.PI * 0.25;
             Angle += Math.PI * 0.25;
         }
+
+        public Ball(Grid grid, double speed, double angle, double x, double y) : base(new Uri("./Graphics/ball-0.png", UriKind.Relative), grid, x, y)
+        {
+            Speed = speed;
+            Angle = angle;
+            _sizeDegree = 3;
+            AdjustSize();
+            _gridAddress = grid;
+        }
         //-------------------------------------------------------
         public void Move()
         {

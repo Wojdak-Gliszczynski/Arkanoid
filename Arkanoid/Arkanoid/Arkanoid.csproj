@@ -164,6 +164,18 @@
     <Resource Include="Graphics\indestructible_brick-8.png" />
     <Resource Include="Graphics\indestructible_brick-9.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Graphics\ball_brick-0.png" />
+    <Resource Include="Graphics\ball_brick-1.png" />
+    <Resource Include="Graphics\ball_brick-2.png" />
+    <Resource Include="Graphics\ball_brick-3.png" />
+    <Resource Include="Graphics\ball_brick-4.png" />
+    <Resource Include="Graphics\ball_brick-5.png" />
+    <Resource Include="Graphics\ball_brick-6.png" />
+    <Resource Include="Graphics\ball_brick-7.png" />
+    <Resource Include="Graphics\ball_brick-8.png" />
+    <Resource Include="Graphics\ball_brick-9.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

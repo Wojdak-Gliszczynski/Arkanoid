@@ -90,7 +90,7 @@ namespace Arkanoid
 
             for (int i = bricks.Count - 1; i >= 0; i--)
             {
-                if (!bricks[i].Collisions(ref balls))
+                if (!bricks[i].Collisions(ref grid1, ref balls))
                 {
                     if (Bonus.OrCreate())
                         bonuses.Add(new Bonus(grid1, Bonus.RandomID(), bricks[i].Margin.Left, bricks[i].Margin.Top));
