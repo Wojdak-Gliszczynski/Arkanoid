@@ -38,13 +38,8 @@ namespace Arkanoid
                     
                     for (int i = 0; i < IDs.Length / 2; i++)    //Każdej cegiełce przypisuje się 2 liczby - Typ i kolor
                     {
-                        switch (IDs[i * 2])
-                        {
-                            //0 - brak cegiełki
-                            case 1: //1 - Zwykła cegiełka
-                                    bricks.Add(new Brick(ref grid, Convert.ToUInt16(IDs[i * 2 + 1]), i + 1, line));
-                                    break;
-                        }
+                        if (IDs[i * 2] != 0)
+                            bricks.Add(new Brick(ref grid, Convert.ToUInt16(IDs[i * 2]), Convert.ToUInt16(IDs[i * 2 + 1]), i + 1, line));
                     }
 
                     line++;

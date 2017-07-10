@@ -12,6 +12,7 @@ namespace Arkanoid
     {
         private int _id;
         static int _speed = 2;
+        private static Random rand = new Random(DateTime.Now.Millisecond);
 
         public Bonus(Grid grid, int ID, double x, double y) : base(new Uri("./Graphics/bonus-" + ID + ".png", UriKind.Relative), grid, x, y)
         {
@@ -20,7 +21,6 @@ namespace Arkanoid
 
         static public bool OrCreate()
         {
-            Random rand = new Random();
             if (rand.Next(0, 4) == 0)
                 return true;
             return false;
@@ -28,7 +28,6 @@ namespace Arkanoid
 
         static public int RandomID()
         {
-            Random rand = new Random();
             return rand.Next(0, 13);
         }
 
@@ -39,7 +38,6 @@ namespace Arkanoid
 
         public void UseBonus(ref Grid grid, ref Platform platform, ref List<Ball> balls)
         {
-            Random rand = new Random();
             if (_id == 0)
                 _id = rand.Next(1, 13);
 

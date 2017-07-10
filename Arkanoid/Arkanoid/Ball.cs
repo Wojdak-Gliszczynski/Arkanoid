@@ -81,7 +81,8 @@ namespace Arkanoid
             else if ((_lastCollisionArea.Right <= rect.Left) || (_lastCollisionArea.Left >= rect.Right))   //Odbija się od lewej lub prawej części prostokąta
                 Angle = Math.PI * 0.5 - (Angle - Math.PI * 0.5);
 
-            Move(); //Wymagany, żeby piłka nie znajdywała się cały czas wewnątrz prostokąta
+            SetPosition(_lastCollisionArea.Left, _lastCollisionArea.Top);
+            //Move(); //Wymagany, żeby piłka nie znajdywała się cały czas wewnątrz prostokąta
         }
 
         public bool HasCollisionWith(Rect rect)
