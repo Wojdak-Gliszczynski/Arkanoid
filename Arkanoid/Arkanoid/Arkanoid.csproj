@@ -57,6 +57,7 @@
     </ApplicationDefinition>
     <Compile Include="Bonus.cs" />
     <Compile Include="Brick.cs" />
+    <Compile Include="Explosion.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="GameControl.cs" />
@@ -175,6 +176,10 @@
     <Resource Include="Graphics\ball_brick-7.png" />
     <Resource Include="Graphics\ball_brick-8.png" />
     <Resource Include="Graphics\ball_brick-9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Graphics\explosion.png" />
+    <Resource Include="Graphics\tnt_brick.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

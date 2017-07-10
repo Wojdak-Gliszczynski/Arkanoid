@@ -26,6 +26,7 @@ namespace Arkanoid
         private List<Ball> balls;
         private List<Brick> bricks;
         private List<Bonus> bonuses;
+        private List<Explosion> explosions;
         private Rect leftWall, rightWall, ceiling;
         //private GameControl stats;
         
@@ -60,12 +61,12 @@ namespace Arkanoid
             grid1.Children.Add(rightWallImg);
 
             //Start
-            GameControl.StartGame(ref grid1, ref platform, ref balls, ref bricks, ref bonuses);
+            GameControl.StartGame(ref grid1, ref platform, ref balls, ref bricks, ref bonuses, ref explosions);
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            GameControl.CheckGameState(ref grid1, ref platform, ref balls, ref bricks, ref bonuses);
+            GameControl.CheckGameState(ref grid1, ref platform, ref balls, ref bricks, ref bonuses, ref explosions);
             GameControl.RefreshStatistics(ref grid1);
 
             for (int i = balls.Count - 1; i >= 0; i--)
@@ -88,16 +89,22 @@ namespace Arkanoid
                     ball.Bounce(ceiling);
             }
 
+            List<Brick> destroyedBricks = new List<Brick>();
             for (int i = bricks.Count - 1; i >= 0; i--)
             {
-                if (!bricks[i].Collisions(ref grid1, ref balls))
+                if (!destroyedBricks.Contains(bricks[i]))
                 {
-                    if (Bonus.OrCreate())
-                        bonuses.Add(new Bonus(grid1, Bonus.RandomID(), bricks[i].Margin.Left, bricks[i].Margin.Top));
-
-                    grid1.Children.Remove(bricks[i]);
-                    bricks.Remove(bricks[i]);
+                    if (!bricks[i].Collisions(ref grid1, ref balls, ref bricks, ref explosions, ref destroyedBricks))
+                    {
+                        if (Bonus.OrCreate())
+                            bonuses.Add(new Bonus(grid1, Bonus.RandomID(), bricks[i].Margin.Left, bricks[i].Margin.Top));
+                    }
                 }
+            }
+            foreach (Brick brick in destroyedBricks)
+            {
+                grid1.Children.Remove(brick);
+                bricks.Remove(brick);
             }
 
             foreach (Bonus bonus in bonuses)
