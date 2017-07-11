@@ -26,93 +26,98 @@ namespace Arkanoid
         private List<Ball> balls;
         private List<Brick> bricks;
         private List<Bonus> bonuses;
-        private List<Explosion> explosions;
-        private Rect leftWall, rightWall, ceiling;
-        //private GameControl stats;
-        
+        private List<Rect> walls;
+        //-------------------------------------------------------
         public MainWindow()
         {
             InitializeComponent();
-            //Timer
-            DispatcherTimer dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Tick += dispatcherTimer_Tick;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
-            dispatcherTimer.Start();
+            CompositionTarget.Rendering += MainLoopFunction;
+            CreateWalls();
+            GameControl.StartGame(ref programGrid, ref platform, ref balls, ref bricks, ref bonuses);
+        }
+        //-------------------------------------------------------
+        private void CreateWalls()
+        {
+            //Physical part
+            walls = new List<Rect>();
 
-            //Ścianki
-            leftWall = new Rect(0, 0, 160, 600);
-            rightWall = new Rect(640, 0, 160, 600);
-            ceiling = new Rect(0, 0, 800, 16);
+            Rect leftWall = new Rect(0, 0, 160, 600);
+            Rect rightWall = new Rect(640, 0, 160, 600);
+            Rect ceiling = new Rect(0, -4, 800, 4);
 
-            BitmapImage bmp = new BitmapImage(new Uri("./Graphics/background_wall.png", UriKind.Relative));
+            walls.Add(leftWall);
+            walls.Add(rightWall);
+            walls.Add(ceiling);
 
-            Image leftWallImg = new Image();
-            leftWallImg.Margin = new Thickness(0, 0, 0, 0);
-            leftWallImg.HorizontalAlignment = HorizontalAlignment.Left;
-            leftWallImg.VerticalAlignment = VerticalAlignment.Top;
-            leftWallImg.Source = bmp;
-            grid1.Children.Add(leftWallImg);
-
-            Image rightWallImg = new Image();
-            rightWallImg.Margin = new Thickness(640, 0, 0, 0);
-            rightWallImg.HorizontalAlignment = HorizontalAlignment.Left;
-            rightWallImg.VerticalAlignment = VerticalAlignment.Top;
-            rightWallImg.Source = bmp;
-            grid1.Children.Add(rightWallImg);
-
-            //Start
-            GameControl.StartGame(ref grid1, ref platform, ref balls, ref bricks, ref bonuses, ref explosions);
+            //Graphics layout
+            TransformingImage leftWallImg = new TransformingImage
+                (new Uri("./Graphics/background_wall.png", UriKind.Relative), programGrid, 0, 0, 160, 600);
+            TransformingImage rightWallImg = new TransformingImage
+                (new Uri("./Graphics/background_wall.png", UriKind.Relative), programGrid, 640, 0, 160, 600);
         }
 
-        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        private void MainLoopFunction(Object Sender, EventArgs e)
         {
-            GameControl.CheckGameState(ref grid1, ref platform, ref balls, ref bricks, ref bonuses, ref explosions);
-            GameControl.RefreshStatistics(ref grid1);
+            GameControl.CheckGameState(ref programGrid, ref platform, ref balls, ref bricks, ref bonuses);
+            GameControl.RefreshStatistics(ref programGrid);
+            DoElementsActions();
+        }
 
-            for (int i = balls.Count - 1; i >= 0; i--)
-            {
-                balls[i].Move();
-                if (balls[i].IsDestroyed())
-                {
-                    grid1.Children.Remove(balls[i]);
-                    balls.Remove(balls[i]);
-                }
-            }
+        private void RemoveElement<T>(List<T> listOfElements, T element) where T : UIElement
+        {
+            programGrid.Children.Remove(element);
+            listOfElements.Remove(element);
+        }
 
+        //ACTIONS PERFORMED ON GAME ELEMENTS 
+        private void BallsActions()
+        {
+            List<Ball> destroyedBalls = new List<Ball>();
             foreach (Ball ball in balls)
             {
-                if (ball.HasCollisionWith(leftWall))
-                    ball.Bounce(leftWall);
-                else if (ball.HasCollisionWith(rightWall))
-                    ball.Bounce(rightWall);
-                if (ball.HasCollisionWith(ceiling)) //Bez else, bo może mieć kolizje jednocześnie ze ścianą i sufitem
-                    ball.Bounce(ceiling);
-            }
+                ball.Move();
 
+                foreach (Rect wall in walls)
+                    if (ball.HasCollisionWith(wall))
+                        ball.Bounce(wall);
+
+                if (ball.IsDestroyed())
+                    destroyedBalls.Add(ball);
+            }
+            foreach (Ball ball in destroyedBalls)
+                balls.Remove(ball);
+        }
+        private void BricksActions()
+        {
             List<Brick> destroyedBricks = new List<Brick>();
-            for (int i = bricks.Count - 1; i >= 0; i--)
+            foreach (Brick brick in bricks)
             {
-                if (!destroyedBricks.Contains(bricks[i]))
-                {
-                    if (!bricks[i].Collisions(ref grid1, ref balls, ref bricks, ref explosions, ref destroyedBricks))
-                    {
-                        if (Bonus.OrCreate())
-                            bonuses.Add(new Bonus(grid1, Bonus.RandomID(), bricks[i].Margin.Left, bricks[i].Margin.Top));
-                    }
-                }
+                if (!destroyedBricks.Contains(brick))
+                    brick.Collisions(programGrid, balls, bricks, destroyedBricks);
             }
             foreach (Brick brick in destroyedBricks)
             {
-                grid1.Children.Remove(brick);
-                bricks.Remove(brick);
+                if (Bonus.OrCreate())
+                    bonuses.Add(new Bonus(programGrid, Bonus.Random(), brick.Margin.Left, brick.Margin.Top));
+                RemoveElement<Brick>(bricks, brick);
             }
-
+        }
+        private void BonusesActions()
+        {
             foreach (Bonus bonus in bonuses)
                 bonus.Move();
-
+        }
+        private void PlatformActions()
+        {
             platform.Control(Mouse.GetPosition(this));
-
-            platform.Collisions(ref grid1, ref balls, ref bricks, ref bonuses);
+            platform.Collisions(ref programGrid, ref balls, ref bonuses);
+        }
+        private void DoElementsActions()
+        {
+            BallsActions();
+            BricksActions();
+            BonusesActions();
+            PlatformActions();
         }
     }
 }

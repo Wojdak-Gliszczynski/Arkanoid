@@ -5,13 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Arkanoid
 {
     class Platform
     {
         private TransformingImage _platformLeft, _platformMiddle, _platformRight;
-        private static double _lastMouseX;  //Zmienna wymagana gdy kursor wyjdzie poza ekran
+        private static double _lastMouseX;  //The variable required when the cursor leaves the screen
         private double _speed;
         private int _sizeDegree;
 
@@ -21,37 +22,33 @@ namespace Arkanoid
             set { _speed = value; }
         }
         //-------------------------------------------------------
-        public Platform(ref Grid grid)
+        public Platform(Grid grid)
         {
-            _sizeDegree = 3;
-
             _platformLeft = new TransformingImage(new Uri("./Graphics/platform_left.png", UriKind.Relative), grid, 268, 552);
             _platformMiddle = new TransformingImage(new Uri("./Graphics/platform_middle.png", UriKind.Relative), grid, 300, 552, 0);
             _platformRight = new TransformingImage(new Uri("./Graphics/platform_right.png", UriKind.Relative), grid, 301, 552);
 
-            RefreshPlatformGraphics(grid.Width / 2);
-            RefreshSize();
-
             _speed = 3;
+            _sizeDegree = 3;
+            RefreshSize(grid.Width / 2);
         }
         //-------------------------------------------------------
+        //CONTROL FUNCTIONS 
         private void Move(double x, double y = 0.0)
         {
             _platformLeft.Move(x, y);
             _platformMiddle.Move(x, y);
             _platformRight.Move(x, y);
         }
-
         private void SetPosition(double x, double y = 552.0)
         {
             _platformLeft.SetPosition(x, y);
-            _platformMiddle.SetPosition(x + _platformLeft.Width + _platformMiddle.Width, y);
-            _platformRight.SetPosition(x + _platformLeft.Width + _platformMiddle.Width, y);
+            _platformMiddle.SetPosition(x + _platformLeft.Width - 1, y);
+            _platformRight.SetPosition(x + _platformLeft.Width + _platformMiddle.Width - 1, y);
         }
-
         public void Control(Point mousePosition)
         {
-            double platformX = _platformMiddle.Margin.Left - (_platformMiddle.Width / 2.0);
+            double platformX = _platformMiddle.Margin.Left + (_platformMiddle.Width / 2.0);
 
             if (mousePosition.X > 0 && mousePosition.X < 800)
                 _lastMouseX = mousePosition.X;
@@ -69,19 +66,22 @@ namespace Arkanoid
                     SetPosition(640 - _platformRight.Width - _platformMiddle.Width - _platformLeft.Width);
             }
         }
-
-        public void Collisions(ref Grid grid, ref List <Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses)
+        //COLLISIONS 
+        private Rect GetCollisionArea()
         {
             double x = _platformLeft.Margin.Left;
             double y = _platformLeft.Margin.Top;
             double width = _platformRight.Margin.Left + _platformRight.Width - _platformLeft.Margin.Left;
             double height = _platformLeft.Height;
-            Rect collisionArea = new Rect(x, y, width, height);
+            return new Rect(x, y, width, height);
+        }
+        private void CollisionsWithBalls(ref List<Ball> balls)
+        {
+            Rect collisionArea = GetCollisionArea();
 
             foreach (Ball ball in balls)
             {
                 Rect ballArea = new Rect(ball.Margin.Left, ball.Margin.Top, ball.Width, ball.Height);
-
                 if (collisionArea.IntersectsWith(ballArea))
                 {
                     double ballRelativeMiddleX = ballArea.Left + (ballArea.Width / 2.0) - collisionArea.Left;
@@ -98,11 +98,14 @@ namespace Arkanoid
                     ball.SetPosition(ball.Margin.Left, _platformMiddle.Margin.Top - ball.Height);
                 }
             }
+        }
+        private void CollisionsWithBonuses(ref Grid grid, ref List<Ball> balls, ref List<Bonus> bonuses)
+        {
+            Rect collisionArea = GetCollisionArea();
 
             for (int i = bonuses.Count - 1; i >= 0; i--)
             {
                 Rect bonusArea = new Rect(bonuses[i].Margin.Left, bonuses[i].Margin.Top, bonuses[i].Width, bonuses[i].Height);
-
                 if (collisionArea.IntersectsWith(bonusArea))
                 {
                     var thisPlatform = this;
@@ -112,48 +115,36 @@ namespace Arkanoid
                 }
             }
         }
-
-        public int SizeToPixels(int sizeDegree)
+        public void Collisions(ref Grid grid, ref List <Ball> balls, ref List<Bonus> bonuses)
         {
-            return (sizeDegree - 1) * 25;
+            CollisionsWithBalls(ref balls);
+            CollisionsWithBonuses(ref grid, ref balls, ref bonuses);
         }
-
-        public void RefreshPlatformGraphics(double platformCenter)
+        //RESIZE FUNCTIONS 
+        public void RefreshSize(double xCenter)
         {
-            double middleX = Convert.ToInt32(platformCenter - _platformMiddle.Width / 2.0);
-            double leftX = Convert.ToInt32(middleX - _platformMiddle.Width - _platformLeft.Width);
-            double rightX = Convert.ToInt32(middleX - _platformMiddle.Width + _platformMiddle.Width);
-
-            _platformLeft.Margin = new Thickness(leftX, 552, 0, 0);
-            _platformMiddle.Margin = new Thickness(middleX, 552, 0, 0);
-            _platformRight.Margin = new Thickness(rightX, 552, 0, 0);
-        }
-
-        public void RefreshSize()
-        {
-            System.Windows.Media.ScaleTransform st = new System.Windows.Media.ScaleTransform(SizeToPixels(_sizeDegree) + 2, 1, 1, 1);
+            ScaleTransform st = new ScaleTransform(SizeToPixels(_sizeDegree) + 2, 1, 0, 0);
             _platformMiddle.Width = SizeToPixels(_sizeDegree);
             _platformMiddle.RenderTransform = st;
+            _platformMiddle.HorizontalAlignment = HorizontalAlignment.Left;
 
-            RefreshPlatformGraphics(_platformMiddle.Margin.Left + _platformMiddle.Width / 2.0);
+            SetPosition(xCenter - _platformMiddle.Width / 2.0 - _platformLeft.Width);
         }
-
         public void SizeUp()
         {
             _sizeDegree++;
             if (_sizeDegree > 5)
                 _sizeDegree = 5;
 
-            RefreshSize();
+            RefreshSize(_platformMiddle.Margin.Left + _platformMiddle.Width / 2);
         }
-
         public void SizeDown()
         {
             _sizeDegree--;
             if (_sizeDegree < 1)
                 _sizeDegree = 1;
 
-            RefreshSize();
+            RefreshSize(_platformMiddle.Margin.Left + _platformMiddle.Width / 2);
         }
 
         public void RemoveFromGrid(ref Grid grid)
@@ -166,6 +157,11 @@ namespace Arkanoid
 
             if (grid.Children.Contains(_platformRight))
                 grid.Children.Remove(_platformRight);
+        }
+        
+        private int SizeToPixels(int sizeDegree)
+        {
+            return (sizeDegree - 1) * 25;
         }
     }
 }

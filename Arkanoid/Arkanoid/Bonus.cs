@@ -10,25 +10,43 @@ namespace Arkanoid
 {
     class Bonus : TransformingImage
     {
-        private int _id;
-        static int _speed = 2;
-        private static Random rand = new Random(DateTime.Now.Millisecond);
+        public enum BonusName : int
+        {
+            Random = 0,
+            DoubleBall,
+            BallSizeUp,
+            BallSizeDown,
+            BallSpeedDown,
+            BallSpeedUp,
+            PlatformSizeUp,
+            PlatformSizeDown,
+            PlatformSpeedUp,
+            PlatformSpeedDown,
+            ExtraLife,
+            ExtraPoints,
+            Skull
+        }
 
-        public Bonus(Grid grid, int ID, double x, double y) : base(new Uri("./Graphics/bonus-" + ID + ".png", UriKind.Relative), grid, x, y)
+        private BonusName _id;
+
+        private static Random _rand = new Random(DateTime.Now.Millisecond);
+        private static int _speed = 2;
+        private static int _maxBonusID = 12;
+        //-------------------------------------------------------
+        public Bonus(Grid grid, BonusName ID, double x, double y) 
+            : base(new Uri("./Graphics/bonus-" + (int)ID + ".png", UriKind.Relative), grid, x, y)
         {
             _id = ID;
         }
-
+        //-------------------------------------------------------
         static public bool OrCreate()
         {
-            if (rand.Next(0, 4) == 0)
-                return true;
-            return false;
+            return (_rand.Next(0, 4) == 0 ? true : false);
         }
 
-        static public int RandomID()
+        static public BonusName Random()
         {
-            return rand.Next(0, 13);
+            return (BonusName)_rand.Next(0, _maxBonusID + 1);
         }
 
         public void Move()
@@ -38,50 +56,51 @@ namespace Arkanoid
 
         public void UseBonus(ref Grid grid, ref Platform platform, ref List<Ball> balls)
         {
-            if (_id == 0)
-                _id = rand.Next(1, 13);
+            if (_id == BonusName.Random)
+                _id = (BonusName)_rand.Next(1, _maxBonusID + 1);
 
             switch (_id)
             {
-                case 1:
-                    for (int i = 0; i < Math.Ceiling(Convert.ToDouble(balls.Count) / 2); i++)    //Dwa razy mniejszy zakres, gdyż będą powstawały nowe piłeczki
+                case BonusName.DoubleBall:
+                    int ballsCount = balls.Count;
+                    for (int i = 0; i < ballsCount; i++)
                         balls.Add(new Ball(balls[i]));
                     break;
-                case 2:
+                case BonusName.BallSizeUp:
                     foreach (Ball ball in balls)
                         ball.SizeUp();
                     break;
-                case 3:
+                case BonusName.BallSizeDown:
                     foreach (Ball ball in balls)
                         ball.SizeDown();
                     break;
-                case 4:
+                case BonusName.BallSpeedDown:
                     foreach (Ball ball in balls)
                         ball.Speed--;
                     break;
-                case 5:
+                case BonusName.BallSpeedUp:
                     foreach (Ball ball in balls)
                         ball.Speed++;
                     break;
-                case 6:
+                case BonusName.PlatformSizeUp:
                     platform.SizeUp();
                     break;
-                case 7:
+                case BonusName.PlatformSizeDown:
                     platform.SizeDown();
                     break;
-                case 8:
+                case BonusName.PlatformSpeedUp:
                     platform.Speed++;
                     break;
-                case 9:
+                case BonusName.PlatformSpeedDown:
                     platform.Speed--;
                     break;
-                case 10:
+                case BonusName.ExtraLife:
                     GameControl.AddLife();
                     break;
-                case 11:
+                case BonusName.ExtraPoints:
                     GameControl.AddPoints(1000);
                     break;
-                case 12:
+                case BonusName.Skull:
                     foreach (Ball ball in balls)
                         grid.Children.Remove(ball);
                     balls.Clear();

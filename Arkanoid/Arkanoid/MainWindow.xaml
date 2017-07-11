@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Arkanoid"
         mc:Ignorable="d"
         Title="Arkanoid" Width="813" Height="631" ResizeMode="NoResize">
-    <Grid x:Name="grid1" Height="600" Width="800">
+    <Grid x:Name="programGrid" Height="600" Width="800">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition Width="0*"/>

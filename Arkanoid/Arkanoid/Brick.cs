@@ -11,106 +11,108 @@ namespace Arkanoid
 {
     class Brick : TransformingImage
     {
-        private ushort _typeID;
-        private ushort _colorID;
-        
-        public enum BrickType : ushort { Normal = 1, Reinforced, Indestructible, Ball, TNT };
-        public enum BrickColor : ushort { Black = 1, Red, Orange, Yellow, Green, Cyan, Blue, Purple, Magenta, White };
+        public enum BrickType : int { Normal = 1, Reinforced, Indestructible, Ball, TNT };
+        public enum BrickColor : int { Black = 1, Red, Orange, Yellow, Green, Cyan, Blue, Purple, Magenta, White };
+
+        private BrickType _typeID;
+        private BrickColor _colorID;
 
         public BrickType Type
         {
-            get { return (BrickType)_typeID; }
+            get { return _typeID; }
         }
 
         public BrickColor Color
         {
-            get { return (BrickColor)_colorID; }
+            get { return _colorID; }
         }
-
-        public Brick(ref Grid grid, ushort typeID, ushort colorID, int xOnGrid, int yOnGrid) : base(GetPath(typeID, colorID), grid, 160 + xOnGrid * 32 - 32, yOnGrid * 16, 32, 16)
+        //-------------------------------------------------------
+        public Brick(ref Grid grid, BrickType typeID, BrickColor colorID, int xOnGrid, int yOnGrid) 
+            : base(GetPath(typeID, colorID), grid, 160 + (xOnGrid - 1) * 32, (yOnGrid - 1) * 16, 32, 16)
         {
             _typeID = typeID;
             _colorID = colorID;
         }
-
-        static private Uri GetPath(ushort typeID, ushort colorID)
+        //-------------------------------------------------------
+        static private Uri GetPath(BrickType typeID, BrickColor colorID)
         {
             string path = "./Graphics/";
             switch(typeID)
             {
-                case (int)BrickType.Normal: path += "brick-"; break;
-                case (int)BrickType.Reinforced: path += "reinforced_brick-"; break;
-                case (int)BrickType.Indestructible: path += "indestructible_brick-"; break;
-                case (int)BrickType.Ball: path += "ball_brick-"; break;
-                case (int)BrickType.TNT: return new Uri(path + "tnt_brick.png", UriKind.Relative);
+                case BrickType.Normal: path += "brick-"; break;
+                case BrickType.Reinforced: path += "reinforced_brick-"; break;
+                case BrickType.Indestructible: path += "indestructible_brick-"; break;
+                case BrickType.Ball: path += "ball_brick-"; break;
+                case BrickType.TNT: return new Uri(path + "tnt_brick.png", UriKind.Relative);
             }
-            path += colorID + ".png";
+            path += (int)colorID + ".png";
 
             return new Uri(path, UriKind.Relative);
         }
-
-        public bool Collisions(ref Grid grid, ref List <Ball> balls, ref List <Brick> bricks, ref List <Explosion> explosions, ref List <Brick> destroyedBricks) //TRUE - cegiełka istnieje; FALSE - cegiełka została zniszczona
+        
+        public void Collisions(Grid grid, List<Ball> balls, List<Brick> bricks, List<Brick> destroyedBricks)
         {
             Rect collisionsArea = new Rect(Margin.Left, Margin.Top, Width, Height);
-
             foreach (Ball ball in balls)
             {
                 Rect ballArea = new Rect(ball.Margin.Left, ball.Margin.Top, ball.Width, ball.Height);
-
                 if (collisionsArea.IntersectsWith(ballArea))
                 {
                     double ballAngle = ball.Angle;
                     ball.Bounce(collisionsArea);
-
+                    
                     switch (_typeID)
                     {
-                        case (int)BrickType.Normal:
-                            destroyedBricks.Add(this);
+                        case BrickType.Normal:
                             GameControl.AddPoints(25);
-                            return false;
-                        case (int)BrickType.Reinforced:
+                            destroyedBricks.Add(this);
+                            break;
+                        case BrickType.Reinforced:
                             GameControl.AddPoints(10);
-                            _typeID = (ushort)BrickType.Normal;
+                            _typeID = BrickType.Normal;
                             Source = new BitmapImage(GetPath(_typeID, _colorID));
                             break;
-                        case (int)BrickType.Ball:
-                            destroyedBricks.Add(this);
+                        case BrickType.Ball:
                             GameControl.AddPoints(15);
-                            balls.Add(new Ball(grid, ball.Speed, ballAngle, Margin.Left + Width / 2 - 8, Margin.Top + Height / 2 - 8));
-                            return false;
-                        case (int)BrickType.TNT:
                             destroyedBricks.Add(this);
+                            balls.Add(new Ball(grid, ball.Speed, ballAngle, Margin.Left + Width / 2 - 8, Margin.Top + Height / 2 - 8));
+                            break;
+                        case BrickType.TNT:
                             GameControl.AddPoints(5);
-                            explosions.Add(new Explosion(ref grid, ref balls, ref bricks, this, ref destroyedBricks, ref explosions));
-                            return false;
+                            destroyedBricks.Add(this);
+                            Explosion explosion = new Explosion(grid, balls, bricks, this, destroyedBricks);
+                            break;
                     }
                 }
             }
-            return true;
         }
 
-        public void DestroyInExplosion(ref Grid grid, ref List<Ball> balls, ref List<Brick> bricks, ref List<Explosion> explosions, ref List<Brick> destroyedBricks)
+        public void DestroyInExplosion(Grid grid, List<Ball> balls, List<Brick> bricks, List<Brick> destroyedBricks)
         {
-            destroyedBricks.Add(this);
             switch (_typeID)
             {
-                case (int)BrickType.Normal:
+                case BrickType.Normal:
                     GameControl.AddPoints(25);
                     destroyedBricks.Add(this);
                     break;
-                case (int)BrickType.Reinforced:
+                case BrickType.Reinforced:
                     GameControl.AddPoints(35);
                     destroyedBricks.Add(this);
                     break;
-                case (int)BrickType.Ball:
+                case BrickType.Ball:
                     GameControl.AddPoints(15);
-                    balls.Add(new Ball(grid, 3, Convert.ToDouble(new Random().Next(0, (int)(2 * Math.PI * 100))) / 100, Margin.Left + Width / 2 - 8, Margin.Top + Height / 2 - 8));
                     destroyedBricks.Add(this);
+
+                    double newBallAngle = new Random().Next(0, (int)(2 * Math.PI * 100)) / 100;
+                    double newBallX = Margin.Left + Width / 2 - 8;
+                    double newBallY = Margin.Top + Height / 2 - 8;
+                    balls.Add(new Ball(grid, 3, newBallAngle, newBallX, newBallY));
+
                     break;
-                case (int)BrickType.TNT:
+                case BrickType.TNT:
                     GameControl.AddPoints(5);
-                    explosions.Add(new Explosion(ref grid, ref balls, ref bricks, this, ref destroyedBricks, ref explosions));
                     destroyedBricks.Add(this);
+                    Explosion explosion = new Explosion(grid, balls, bricks, this, destroyedBricks);
                     break;
             }
         }

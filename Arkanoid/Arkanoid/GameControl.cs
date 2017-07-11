@@ -17,8 +17,9 @@ namespace Arkanoid
         static private Label _labelScore;
         static private Label _labelLife;
         static private Label _labelLevel;
-
-        static public void StartGame(ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses, ref List<Explosion> explosions)
+        //-------------------------------------------------------
+        static public void StartGame
+            (ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses)
         {
             _score = 0;
             _life = 3;
@@ -37,38 +38,37 @@ namespace Arkanoid
             grid.Children.Add(_labelLevel);
 
             RefreshStatistics(ref grid);
-
-            //Uruchom poziom
-            StartLevel(ref grid, ref platform, ref balls, ref bricks, ref bonuses, ref explosions);
+            StartLevel(ref grid, ref platform, ref balls, ref bricks, ref bonuses);
         }
 
-        static public void CheckGameState(ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List <Brick> bricks, ref List<Bonus> bonuses, ref List<Explosion> explosions)
+        static public void CheckGameState
+            (ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List <Brick> bricks, ref List<Bonus> bonuses)
         {
             ushort destructibleBricksCount = 0;
             foreach (Brick brick in bricks)
                 if (brick.Type != Brick.BrickType.Indestructible)
                     destructibleBricksCount++;
 
-            if (destructibleBricksCount == 0)
-            {
-                if (!NextLevel(ref grid, ref platform, ref balls, ref bricks, ref bonuses, ref explosions))
-                    GameOver();
-            }
+            if (destructibleBricksCount == 0 && !NextLevel(ref grid, ref platform, ref balls, ref bricks, ref bonuses))
+                GameOver();
             if (balls.Count == 0)
-                LostLife(ref grid, ref platform, ref balls, ref bricks, ref bonuses, ref explosions);
+                LostLife(ref grid, ref platform, ref balls, ref bricks, ref bonuses);
         }
 
-        static public void LostLife(ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses, ref List<Explosion> explosions)
+        static public void LostLife
+            (ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses)
         {
             _life--;
             if (_life == 0)
                 GameOver();
-            StartLevel(ref grid, ref platform, ref balls, ref bricks, ref bonuses, ref explosions);
+            else
+                StartLevel(ref grid, ref platform, ref balls, ref bricks, ref bonuses);
         }
 
-        static public bool StartLevel(ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses, ref List<Explosion> explosions)
+        static public bool StartLevel
+            (ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses)
         {
-            //Czyszczenie grafik z siatki
+            //Cleaning graphics from the grid and from the lists of elements
             if (platform != null)
                 platform.RemoveFromGrid(ref grid);
             if (balls != null)
@@ -77,28 +77,21 @@ namespace Arkanoid
                     grid.Children.Remove(ball);
                 balls.Clear();
             }
-            if (explosions != null)
-            {
-                foreach (Explosion explosion in explosions)
-                    grid.Children.Remove(explosion);
-                explosions.Clear();
-            }
 
-            //Tworzenie nowych obiektów
-            platform = new Platform(ref grid);
+            //Creating new elements
+            platform = new Platform(grid);
             
             balls = new List<Ball>();
             balls.Add(new Ball(grid));
 
-            explosions = new List<Explosion>();
-
             return (Level.LoadLevel(_level - 1, ref grid, ref bricks, ref bonuses) ? true : false);
         }
 
-        static public bool NextLevel(ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses, ref List<Explosion> explosions)
+        static public bool NextLevel
+            (ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses)
         {
             _level++;
-            return (StartLevel(ref grid, ref platform, ref balls, ref bricks, ref bonuses, ref explosions) ? true : false);
+            return (StartLevel(ref grid, ref platform, ref balls, ref bricks, ref bonuses) ? true : false);
         }
 
         static public void AddPoints(int points)

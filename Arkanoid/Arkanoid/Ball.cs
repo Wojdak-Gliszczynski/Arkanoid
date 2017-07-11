@@ -5,24 +5,28 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Arkanoid
 {
     class Ball : TransformingImage
     {
-        private Rect _lastCollisionArea; //Obszar kolizji z poprzedniego ruchu
-        private Rect _collisionArea;    //Obszar kolizji teraz
+        private Rect _prevCollisionArea;    //Collision area in the previous frame
+        private Rect _collisionArea;    //Collision area now
         private double _speed;
-        private double _angle;   //W radianach
+        private double _angle;  //Radians
         private int _sizeDegree;
-        Grid _gridAddress;  //Dla konstruktora kopiującego
 
         public double Speed
         {
             get { return _speed; }
             set
             {
-                if (value >= 2 && value <= 6)
+                if (value < 2)
+                    _speed = 2;
+                else if (value > 6)
+                    _speed = 6;
+                else
                     _speed = value;
             }
         }
@@ -39,71 +43,52 @@ namespace Arkanoid
             }
         }
         //-------------------------------------------------------
-        public Ball(Grid grid) : base(new Uri("./Graphics/ball-0.png", UriKind.Relative), grid, 384, 456)
+        //CONSTRUCTORS 
+        public Ball(Grid grid) 
+            : base(new Uri("./Graphics/ball-0.png", UriKind.Relative), grid, 384, 456)
         {
-            Speed = 4;
-            Angle = (1.0 / 4.0) * 2 * Math.PI;
-            _sizeDegree = 3;
-            AdjustSize();
-            _gridAddress = grid;
+            SetInitialParameters(4, (1.0 / 4.0) * 2 * Math.PI, 3);
         }
-
-        public Ball(Ball ball) : base(new Uri("./Graphics/ball-0.png", UriKind.Relative), ball._gridAddress, ball.Margin.Left, ball.Margin.Top, ball.Width, ball.Height)
+        public Ball(Ball ball) 
+            : base (
+                  new Uri("./Graphics/ball-0.png", UriKind.Relative), 
+                  VisualTreeHelper.GetParent(ball) as Grid, 
+                  ball.Margin.Left, 
+                  ball.Margin.Top, 
+                  ball.Width, 
+                  ball.Height
+                  )
         {
-            Speed = ball.Speed;
-            Angle = ball.Angle;
-            _sizeDegree = ball._sizeDegree;
-            AdjustSize();
-            _gridAddress = ball._gridAddress;
-
+            SetInitialParameters(ball.Speed, ball.Angle, ball._sizeDegree);
+            
             //Zmiana toru lotu obu piłeczek
             ball.Angle -= Math.PI * 0.25;
             Angle += Math.PI * 0.25;
         }
-
-        public Ball(Grid grid, double speed, double angle, double x, double y) : base(new Uri("./Graphics/ball-0.png", UriKind.Relative), grid, x, y)
+        public Ball(Grid grid, double speed, double angle, double x, double y) 
+            : base(new Uri("./Graphics/ball-0.png", UriKind.Relative), grid, x, y)
+        {
+            SetInitialParameters(speed, angle, 3);
+        }
+        //-------------------------------------------------------
+        private void SetInitialParameters(double speed, double angle, int sizeDegree)
         {
             Speed = speed;
             Angle = angle;
-            _sizeDegree = 3;
+            _sizeDegree = sizeDegree;
             AdjustSize();
-            _gridAddress = grid;
         }
-        //-------------------------------------------------------
-        public void Move()
+        
+        //RESIZE FUNCTIONS 
+        private void ChangeSize(double scale)
         {
-            _lastCollisionArea = new Rect(Margin.Left, Margin.Top, Width, Height);
+            double lastSize = Width;
 
-            double speedX = Math.Cos(Angle) * Speed;
-            double speedY = Math.Sin(Angle) * Speed;
+            Width = 16 * scale;
+            Height = 16 * scale;
 
-            this.Move(speedX, speedY);
-
-            _collisionArea = new Rect(Margin.Left, Margin.Top, Width, Height);
+            Margin = new Thickness(Margin.Left - (Width - lastSize), Margin.Top - (Height - lastSize), 0, 0);
         }
-
-        public void Bounce(Rect rect)
-        {
-            //Z której części prostokąta się odbija (przejście między ćwiartkami)
-            if ((_lastCollisionArea.Top >= rect.Bottom) || (_lastCollisionArea.Bottom <= rect.Top))    //Odbija się od dolnej lub górnej części prostokąta
-                Angle = Math.PI - (Angle - Math.PI);
-            else if ((_lastCollisionArea.Right <= rect.Left) || (_lastCollisionArea.Left >= rect.Right))   //Odbija się od lewej lub prawej części prostokąta
-                Angle = Math.PI * 0.5 - (Angle - Math.PI * 0.5);
-
-            SetPosition(_lastCollisionArea.Left, _lastCollisionArea.Top);
-            //Move(); //Wymagany, żeby piłka nie znajdywała się cały czas wewnątrz prostokąta
-        }
-
-        public bool HasCollisionWith(Rect rect)
-        {
-            return (_collisionArea.IntersectsWith(rect));
-        }
-
-        public bool IsDestroyed()
-        {
-            return (Margin.Top > 600 ? true : false);
-        }
-
         private void AdjustSize()
         {
             if (_sizeDegree < 1)
@@ -120,27 +105,49 @@ namespace Arkanoid
                 case 5: ChangeSize(2.0); break;
             }
         }
-
-        private void ChangeSize(double scale)
-        {
-            double lastSize = Width;
-
-            Width = 16 * scale;
-            Height = 16 * scale;
-            
-            Margin = new Thickness(Margin.Left - (Width - lastSize), Margin.Top - (Height - lastSize), 0, 0);
-        }
-
         public void SizeUp()
         {
             _sizeDegree++;
             AdjustSize();
         }
-
         public void SizeDown()
         {
             _sizeDegree--;
             AdjustSize();
+        }
+        //CONTROL FUNCTIONS 
+        public void Move()
+        {
+            _prevCollisionArea = new Rect(Margin.Left, Margin.Top, Width, Height);
+
+            double speedX = Math.Cos(Angle) * Speed;
+            double speedY = Math.Sin(Angle) * Speed;
+
+            this.Move(speedX, speedY);
+
+            _collisionArea = new Rect(Margin.Left, Margin.Top, Width, Height);
+        }
+        public void Bounce(Rect rect)
+        {
+            //From whitch part of the rectangle does it bounce? (Transition between quarters)
+            //It bounces from the bottom or top of the rectangle
+            if ((_prevCollisionArea.Top >= rect.Bottom) || (_prevCollisionArea.Bottom <= rect.Top))
+                Angle = Math.PI - (Angle - Math.PI);
+            //It bounces from the left or right part of the rectangle
+            else if ((_prevCollisionArea.Right <= rect.Left) || (_prevCollisionArea.Left >= rect.Right))
+                Angle = Math.PI * 0.5 - (Angle - Math.PI * 0.5);
+            //Return to the previous position
+            SetPosition(_prevCollisionArea.Left, _prevCollisionArea.Top);
+        }
+
+        public bool HasCollisionWith(Rect rect)
+        {
+            return (_collisionArea.IntersectsWith(rect));
+        }
+
+        public bool IsDestroyed()
+        {
+            return (Margin.Top > 600 ? true : false);
         }
     }
 }

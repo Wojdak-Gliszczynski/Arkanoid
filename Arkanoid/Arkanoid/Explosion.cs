@@ -5,41 +5,45 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace Arkanoid
 {
     class Explosion : TransformingImage
     {
-        Grid _gridAddress;
-        DispatcherTimer _timer;
-
-        public Explosion(ref Grid grid, ref List<Ball> balls, ref List<Brick> bricks, Brick brokenBrick, ref List<Brick> destroyedBricks, ref List<Explosion> explosions) : base(new Uri("./Graphics/explosion.png", UriKind.Relative), grid, brokenBrick.Margin.Left + brokenBrick.Width / 2 - 48, brokenBrick.Margin.Top + brokenBrick.Height / 2 - 24, 96, 48)
+        private DispatcherTimer _timer;
+        //-------------------------------------------------------
+        public Explosion(Grid grid, List<Ball> balls, List<Brick> bricks, Brick brokenBrick, List<Brick> destroyedBricks) 
+            : base (
+                  new Uri("./Graphics/explosion.png", UriKind.Relative), 
+                  grid, 
+                  brokenBrick.Margin.Left + brokenBrick.Width / 2 - 48, 
+                  brokenBrick.Margin.Top + brokenBrick.Height / 2 - 24, 
+                  96, 48
+                  )
         {
             Rect collisionsArea = new Rect(Margin.Left, Margin.Top, Width, Height);
-            for (int i = bricks.Count - 1; i >= 0; i--)
+            foreach (Brick brick in bricks)
             {
-                if (bricks[i].Type != Brick.BrickType.Indestructible && bricks[i] != brokenBrick && !destroyedBricks.Contains(bricks[i]))
+                if (brick.Type != Brick.BrickType.Indestructible && brick != brokenBrick && !destroyedBricks.Contains(brick))
                 {
-                    Rect brickCollisionsArea = new Rect(bricks[i].Margin.Left, bricks[i].Margin.Top, bricks[i].Width, bricks[i].Height);
-
+                    Rect brickCollisionsArea = new Rect(brick.Margin.Left, brick.Margin.Top, brick.Width, brick.Height);
                     if (collisionsArea.IntersectsWith(brickCollisionsArea))
-                        bricks[i].DestroyInExplosion(ref grid, ref balls, ref bricks, ref explosions, ref destroyedBricks);
+                        brick.DestroyInExplosion(grid, balls, bricks, destroyedBricks);
                 }
             }
 
-            _gridAddress = grid;
-
-            //Timer istnienia efektu
+            //Effect's timer
             _timer = new DispatcherTimer();
             _timer.Tick += RemoveEffect;
             _timer.Interval = new TimeSpan(0, 0, 1);
             _timer.Start();
         }
-
+        //-------------------------------------------------------
         public void RemoveEffect(Object sender, EventArgs e)
         {
-            _gridAddress.Children.Remove(this);
+            (VisualTreeHelper.GetParent(this) as Grid).Children.Remove(this);
             _timer.Stop();
         }
     }
