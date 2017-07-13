@@ -10,6 +10,7 @@ namespace Arkanoid
 {
     class GameControl
     {
+        static private bool _gameOver;
         static private int _score;
         static private int _life;
         static private int _level;
@@ -21,6 +22,7 @@ namespace Arkanoid
         static public void StartGame
             (ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses)
         {
+            _gameOver = false;
             _score = 0;
             _life = 3;
             _level = 1;
@@ -113,7 +115,12 @@ namespace Arkanoid
 
         static public void GameOver()
         {
-            Application.Current.Shutdown();
+            _gameOver = true;
+        }
+
+        static public bool IsTheGameOver()
+        {
+            return _gameOver;
         }
     }
 }

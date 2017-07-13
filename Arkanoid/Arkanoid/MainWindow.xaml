@@ -6,10 +6,16 @@
         xmlns:local="clr-namespace:Arkanoid"
         mc:Ignorable="d"
         Title="Arkanoid" Width="813" Height="631" ResizeMode="NoResize">
-    <Grid x:Name="programGrid" Height="600" Width="800">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="0*"/>
-        </Grid.ColumnDefinitions>
+    <Grid x:Name="menuGrid" Height="600" Width="800">
+        <!--Main Menu-->
+        <Button x:Name="buttonStartGame" Content="Start Game" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Margin="0,0,0,128" Height="32" Click="buttonStartGame_Click"/>
+        <Button x:Name="buttonScoreboard" Content="High scores" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Margin="0" Height="32" Click="buttonScoreboard_Click"/>
+        <Button x:Name="buttonQuit" Content="Quit" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Margin="350,128,350,0" Height="32" Click="buttonQuit_Click"/>
+
+        <!--Scoreboard-->
+
+
+        <!--Creating the game grid-->
+        <Grid x:Name="gameGrid" Height="600" Width="800"/>
     </Grid>
 </Window>
