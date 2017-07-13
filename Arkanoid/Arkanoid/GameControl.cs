@@ -82,7 +82,7 @@ namespace Arkanoid
             platform = new Platform(grid);
             
             balls = new List<Ball>();
-            balls.Add(new Ball(grid));
+            balls.Add(new Ball(grid, platform));
 
             return (Level.LoadLevel(_level - 1, ref grid, ref bricks, ref bonuses) ? true : false);
         }

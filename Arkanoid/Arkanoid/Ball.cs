@@ -16,6 +16,7 @@ namespace Arkanoid
         private double _speed;
         private double _angle;  //Radians
         private int _sizeDegree;
+        private bool _glued;    //Is the ball glued to a platform?
 
         public double Speed
         {
@@ -42,12 +43,13 @@ namespace Arkanoid
                 _angle = value % (2 * Math.PI);
             }
         }
-        //-------------------------------------------------------
+        
         //CONSTRUCTORS 
-        public Ball(Grid grid) 
-            : base(new Uri("./Graphics/ball-0.png", UriKind.Relative), grid, 384, 456)
+        public Ball(Grid grid, Platform platfrom) 
+            : base(new Uri("./Graphics/ball-0.png", UriKind.Relative), grid, platfrom.GetCenterX() - 8, 552 - 16)
         {
-            SetInitialParameters(4, (1.0 / 4.0) * 2 * Math.PI, 3);
+            SetInitialParameters(4, (3.0 / 4.0) * 2 * Math.PI, 3);
+            _glued = true;
         }
         public Ball(Ball ball) 
             : base (
@@ -60,6 +62,7 @@ namespace Arkanoid
                   )
         {
             SetInitialParameters(ball.Speed, ball.Angle, ball._sizeDegree);
+            _glued = ball._glued;
             
             //Zmiana toru lotu obu piłeczek
             ball.Angle -= Math.PI * 0.25;
@@ -69,6 +72,7 @@ namespace Arkanoid
             : base(new Uri("./Graphics/ball-0.png", UriKind.Relative), grid, x, y)
         {
             SetInitialParameters(speed, angle, 3);
+            _glued = false;
         }
         //-------------------------------------------------------
         private void SetInitialParameters(double speed, double angle, int sizeDegree)
@@ -119,13 +123,15 @@ namespace Arkanoid
         public void Move()
         {
             _prevCollisionArea = new Rect(Margin.Left, Margin.Top, Width, Height);
+            if (!_glued)
+            {
+                double speedX = Math.Cos(Angle) * Speed;
+                double speedY = Math.Sin(Angle) * Speed;
 
-            double speedX = Math.Cos(Angle) * Speed;
-            double speedY = Math.Sin(Angle) * Speed;
+                this.Move(speedX, speedY);
 
-            this.Move(speedX, speedY);
-
-            _collisionArea = new Rect(Margin.Left, Margin.Top, Width, Height);
+                _collisionArea = new Rect(Margin.Left, Margin.Top, Width, Height);
+            }
         }
         public void Bounce(Rect rect)
         {
@@ -139,15 +145,22 @@ namespace Arkanoid
             //Return to the previous position
             SetPosition(_prevCollisionArea.Left, _prevCollisionArea.Top);
         }
+        public void Peel()
+        {
+            _glued = false;
+        }
 
         public bool HasCollisionWith(Rect rect)
         {
             return (_collisionArea.IntersectsWith(rect));
         }
-
         public bool IsDestroyed()
         {
             return (Margin.Top > 600 ? true : false);
+        }
+        public bool IsGlued()
+        {
+            return _glued;
         }
     }
 }

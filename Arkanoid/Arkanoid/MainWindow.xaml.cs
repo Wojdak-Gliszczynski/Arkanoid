@@ -109,7 +109,7 @@ namespace Arkanoid
         }
         private void PlatformActions()
         {
-            platform.Control(Mouse.GetPosition(this));
+            platform.Control(Mouse.GetPosition(this), IsLeftMouseButtonPressed(), balls);
             platform.Collisions(ref programGrid, ref balls, ref bonuses);
         }
         private void DoElementsActions()
@@ -118,6 +118,11 @@ namespace Arkanoid
             BricksActions();
             BonusesActions();
             PlatformActions();
+        }
+
+        public bool IsLeftMouseButtonPressed()
+        {
+            return (Mouse.LeftButton == MouseButtonState.Pressed ? true : false);
         }
     }
 }

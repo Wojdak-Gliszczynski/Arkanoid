@@ -40,13 +40,24 @@ namespace Arkanoid
             _platformMiddle.Move(x, y);
             _platformRight.Move(x, y);
         }
+        private void MoveGluedBalls(List<Ball> balls, double x, double y = 0.0)
+        {
+            foreach (Ball ball in balls)
+                if (ball.IsGlued())
+                    ball.Move(x, y);
+        }
+        private void MoveWithBalls(List<Ball> balls, double x, double y = 0.0)
+        {
+            Move(x, y);
+            MoveGluedBalls(balls, x, y);
+        }
         private void SetPosition(double x, double y = 552.0)
         {
             _platformLeft.SetPosition(x, y);
             _platformMiddle.SetPosition(x + _platformLeft.Width - 1, y);
             _platformRight.SetPosition(x + _platformLeft.Width + _platformMiddle.Width - 1, y);
         }
-        public void Control(Point mousePosition)
+        public void Control(Point mousePosition, bool leftMouseButtonPressed, List<Ball> balls)
         {
             double platformX = _platformMiddle.Margin.Left + (_platformMiddle.Width / 2.0);
 
@@ -55,16 +66,19 @@ namespace Arkanoid
 
             if (_lastMouseX < platformX - _speed / 2.0)
             {
-                Move(-_speed);
+                MoveWithBalls(balls, -_speed);
                 if (_platformLeft.Margin.Left < 160)
-                    SetPosition(160);
+                    MoveWithBalls(balls, 160 - (_platformLeft.Margin.Left));
             }
             else if (_lastMouseX > platformX + _speed / 2.0)
             { 
-                Move(_speed);
+                MoveWithBalls(balls, _speed);
                 if (_platformRight.Margin.Left + _platformRight.Width > 640)
-                    SetPosition(640 - _platformRight.Width - _platformMiddle.Width - _platformLeft.Width);
+                    MoveWithBalls(balls, 640 - (_platformRight.Margin.Left + _platformRight.Width));
             }
+
+            if (leftMouseButtonPressed)
+                PeelGluedBalls(balls);
         }
         //COLLISIONS 
         private Rect GetCollisionArea()
@@ -147,6 +161,13 @@ namespace Arkanoid
             RefreshSize(_platformMiddle.Margin.Left + _platformMiddle.Width / 2);
         }
 
+        public void PeelGluedBalls(List<Ball> balls)
+        {
+            foreach (Ball ball in balls)
+                if (ball.IsGlued())
+                    ball.Peel();
+        }
+
         public void RemoveFromGrid(ref Grid grid)
         {
             if (grid.Children.Contains(_platformLeft))
@@ -157,6 +178,11 @@ namespace Arkanoid
 
             if (grid.Children.Contains(_platformRight))
                 grid.Children.Remove(_platformRight);
+        }
+
+        public double GetCenterX()
+        {
+            return _platformMiddle.Margin.Left + _platformMiddle.Width / 2.0;
         }
         
         private int SizeToPixels(int sizeDegree)
