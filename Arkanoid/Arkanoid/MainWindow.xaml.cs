@@ -22,6 +22,7 @@ namespace Arkanoid
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Scoreboard scoreboard;
         private Label[] scoreboardNo;
         private Label[] scoreboardNames;
         private Label[] scoreboardScore;
@@ -43,6 +44,7 @@ namespace Arkanoid
         //MAIN MENU 
         private void ScoreboardInit()
         {
+            scoreboard = new Scoreboard();
             scoreboardBorders = new List<Border>();
 
             CreateTextBoxCol(ref scoreboardNo, 10, Width / 2.0 - 171, Height / 2.0 - 152, 24, 24);
@@ -55,10 +57,17 @@ namespace Arkanoid
             buttonScoreboardBack = CreateButton("Back", buttonScoreboardBack_Click, Width / 2.0 - 50, Height / 2.0 + 120, 100, 32);
             menuGrid.Children.Add(buttonScoreboardBack);
 
+            RefreshScoreboard();
             HideTheScoreboard();
         }
+        private void RefreshScoreboard()
+        {
+            for (int i = 0; i < scoreboardNames.Length; i++)
+                scoreboardNames[i].Content = scoreboard.Item[i].Name;
+            for (int i = 0; i < scoreboardScore.Length; i++)
+                scoreboardScore[i].Content = scoreboard.Item[i].Score;
+        }
         //Show/Hide Actions 
-        //+Main Menu - Show/Hide 
         private void ShowTheMainMenu()
         {
             buttonStartGame.Visibility = Visibility.Visible;
@@ -71,7 +80,6 @@ namespace Arkanoid
             buttonScoreboard.Visibility = Visibility.Hidden;
             buttonQuit.Visibility = Visibility.Hidden;
         }
-        //+Scoreboard - Show/Hide 
         private void ShowTheScoreboard()
         {
             foreach (Label item in scoreboardNo)
@@ -96,7 +104,6 @@ namespace Arkanoid
                 item.Visibility = Visibility.Hidden;
             buttonScoreboardBack.Visibility = Visibility.Hidden;
         }
-
         //Actions Buttons 
         private void buttonStartGame_Click(object sender, RoutedEventArgs e)
         {
@@ -170,7 +177,6 @@ namespace Arkanoid
 
             return button;
         }
-        
 
         //GAME 
         public void StartGame()
@@ -179,12 +185,12 @@ namespace Arkanoid
             CreateWalls();
             GameControl.StartGame(ref gameGrid, ref platform, ref balls, ref bricks, ref bonuses);
         }
-
         public void FinishGame()
         {
             CompositionTarget.Rendering -= MainLoopFunction;
             walls.Clear();
             gameGrid.Children.Clear();
+            RefreshScoreboard();
             ShowTheMainMenu();
         }
 

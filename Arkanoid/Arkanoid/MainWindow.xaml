@@ -12,9 +12,6 @@
         <Button x:Name="buttonScoreboard" Content="High scores" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Margin="0" Height="32" Click="buttonScoreboard_Click"/>
         <Button x:Name="buttonQuit" Content="Quit" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Margin="350,128,350,0" Height="32" Click="buttonQuit_Click"/>
 
-        <!--Scoreboard-->
-
-
         <!--Creating the game grid-->
         <Grid x:Name="gameGrid" Height="600" Width="800"/>
     </Grid>
