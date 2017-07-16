@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,6 +46,8 @@ namespace Arkanoid
         private void ScoreboardInit()
         {
             scoreboard = new Scoreboard();
+            LoadScoreboard();
+
             scoreboardBorders = new List<Border>();
 
             CreateTextBoxCol(ref scoreboardNo, 10, Width / 2.0 - 171, Height / 2.0 - 152, 24, 24);
@@ -66,6 +69,54 @@ namespace Arkanoid
                 scoreboardNames[i].Content = scoreboard.Item[i].Name;
             for (int i = 0; i < scoreboardScore.Length; i++)
                 scoreboardScore[i].Content = scoreboard.Item[i].Score;
+        }
+        private void SaveScore(int score)
+        {
+            if (scoreboard.IsAScoreBeaten(score))
+            {
+                WindowTextBox wtb = new WindowTextBox("Enter your name", "score: " + score + "!");
+                string name = wtb.TextBox.Text;
+
+                ScoreboardItem item = new ScoreboardItem(name, score);
+                scoreboard.AddItem(item);
+                SaveScoreboard();
+            }
+        }
+        private bool SaveScoreboard()
+        {
+            try
+            {
+                using (StreamWriter file = new StreamWriter(System.IO.Path.GetFullPath("high-scores.dat")))
+                {
+                    for (int i = 0; i < 10; i++)
+                        file.WriteLine(scoreboard.Item[i].Score.ToString() + " " + scoreboard.Item[i].Name);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Cannot save high-scores", "Error");
+                return false;
+            }
+            return true;
+        }
+        private void LoadScoreboard()
+        {
+            try
+            {
+                StreamReader file = new StreamReader(System.IO.Path.GetFullPath("high-scores.dat"));
+                for (int i = 0; i < 10; i++)
+                {
+                    string line = file.ReadLine();
+                    int score = Convert.ToInt32(line.Split(' ')[0]);
+                    string name = line.Remove(0, line.Split(' ')[0].Length + 1);
+                    scoreboard.Item[i].ChangeValues(score, name);
+                }
+            }
+            catch (Exception e)
+            {
+                if (!SaveScoreboard())
+                    MessageBox.Show("Cannot load high-scores.", "Error");
+            }
         }
         //Show/Hide Actions 
         private void ShowTheMainMenu()
@@ -117,8 +168,7 @@ namespace Arkanoid
         }
         private void buttonQuit_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("Do you want to leave the game?", "Exit", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                Application.Current.Shutdown();
+            Application.Current.Shutdown();
         }
         private void buttonScoreboardBack_Click(object sender, RoutedEventArgs e)
         {
@@ -188,8 +238,11 @@ namespace Arkanoid
         public void FinishGame()
         {
             CompositionTarget.Rendering -= MainLoopFunction;
+            SaveScore(GameControl.Score);
+
             walls.Clear();
             gameGrid.Children.Clear();
+
             RefreshScoreboard();
             ShowTheMainMenu();
         }

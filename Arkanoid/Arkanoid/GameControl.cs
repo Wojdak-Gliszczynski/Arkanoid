@@ -18,6 +18,8 @@ namespace Arkanoid
         static private Label _labelScore;
         static private Label _labelLife;
         static private Label _labelLevel;
+
+        static public int Score { get { return _score; } }
         //-------------------------------------------------------
         static public void StartGame
             (ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses)

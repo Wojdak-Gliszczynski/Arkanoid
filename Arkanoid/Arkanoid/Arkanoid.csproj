@@ -64,6 +64,9 @@
     <Compile Include="Scoreboard.cs" />
     <Compile Include="ScoreboardItem.cs" />
     <Compile Include="TransformingImage.cs" />
+    <Compile Include="WindowTextBox.xaml.cs">
+      <DependentUpon>WindowTextBox.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -77,6 +80,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="WindowTextBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

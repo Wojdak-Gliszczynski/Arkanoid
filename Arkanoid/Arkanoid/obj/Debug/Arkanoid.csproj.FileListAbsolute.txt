@@ -26,3 +26,5 @@ C:\Users\ptyni\Documents\GitHub\Arkanoid\Arkanoid\Arkanoid\obj\Debug\MainWindow.
 C:\Users\ptyni\Documents\GitHub\Arkanoid\Arkanoid\Arkanoid\obj\Debug\Arkanoid.g.resources
 C:\Users\ptyni\Documents\GitHub\Arkanoid\Arkanoid\Arkanoid\obj\Debug\Arkanoid.Properties.Resources.resources
 C:\Users\ptyni\Documents\GitHub\Arkanoid\Arkanoid\Arkanoid\obj\Debug\Arkanoid.csproj.GenerateResource.Cache
+C:\Users\ptyni\Documents\GitHub\Arkanoid\Arkanoid\Arkanoid\obj\Debug\WindowTextBox.g.cs
+C:\Users\ptyni\Documents\GitHub\Arkanoid\Arkanoid\Arkanoid\obj\Debug\WindowTextBox.baml

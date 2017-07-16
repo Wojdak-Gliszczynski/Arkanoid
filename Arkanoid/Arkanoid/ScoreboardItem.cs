@@ -14,13 +14,13 @@ namespace Arkanoid
         public int Score { get { return _score; } }
         public string Name { get { return _name; } }
         //-------------------------------------------
-        public ScoreboardItem()
+        public ScoreboardItem(string name = "Noname", int score = 0)
         {
-            _score = 0;
-            _name = "Noname";
+            _score = score;
+            _name = name;
         }
         //-------------------------------------------
-        void ChangeValues(int score, string name)
+        public void ChangeValues(int score, string name)
         {
             if (score > 0)
             {

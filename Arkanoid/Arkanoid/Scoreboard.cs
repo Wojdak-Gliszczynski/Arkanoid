@@ -25,18 +25,28 @@ namespace Arkanoid
         //-------------------------------------------
         public void AddItem(ScoreboardItem item)
         {
-            for (int i = 1; i < _scoreboardItems.Length; i++)
+            for (int i = _scoreboardItems.Length - 2; i >= 0; i--)
             {
-                if (item >= _scoreboardItems[i])
+                if (item > _scoreboardItems[i])
                 {
-                    _scoreboardItems[i - 1] = _scoreboardItems[i];
-                    if (item == _scoreboardItems[i])
-                    {
-                        _scoreboardItems[i] = item;
-                        break;
-                    }
+                    _scoreboardItems[i + 1] = _scoreboardItems[i];
+                    if (i == 0) //Best score
+                        _scoreboardItems[0] = item;
+                }
+                else //First higher than that one
+                {
+                    _scoreboardItems[i + 1] = item;
+                    break;
                 }
             }
+        }
+        public bool IsAScoreBeaten(ScoreboardItem item)
+        {
+            return (item > _scoreboardItems[_scoreboardItems.Length - 1]);
+        }
+        public bool IsAScoreBeaten(int score)
+        {
+            return (score > _scoreboardItems[_scoreboardItems.Length - 1].Score);
         }
     }
 }
