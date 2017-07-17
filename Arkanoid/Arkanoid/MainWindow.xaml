@@ -10,9 +10,14 @@
         <!--Main Menu-->
         <Button x:Name="buttonStartGame" Content="Start Game" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Margin="0,0,0,128" Height="32" Click="buttonStartGame_Click"/>
         <Button x:Name="buttonScoreboard" Content="High scores" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Margin="0" Height="32" Click="buttonScoreboard_Click"/>
-        <Button x:Name="buttonQuit" Content="Quit" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Margin="350,128,350,0" Height="32" Click="buttonQuit_Click"/>
+        <Button x:Name="buttonQuit" Content="Exit game" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Margin="350,128,350,0" Height="32" Click="buttonQuit_Click"/>
 
-        <!--Creating the game grid-->
+        <!--Creating another grids-->
         <Grid x:Name="gameGrid" Height="600" Width="800"/>
+        <Grid x:Name="menuInGameGrid" Height="150" Width="250" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Hidden">
+            <Rectangle Fill="#FFF4F4F5" Stroke="Gray" HorizontalAlignment="Left" Height="150" VerticalAlignment="Top" Width="250"/>
+            <Button x:Name="buttonIGGBackToGame" Content="Back to game" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Margin="0,0,0,64" Height="32" Click="buttonIGGBackToGame_Click"/>
+            <Button x:Name="buttonIGGBackToMainMenu" Content="Main Menu" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Margin="0,64,0,0" Height="32" Click="buttonIGGBackToMainMenu_Click"/>
+        </Grid>
     </Grid>
 </Window>

@@ -19,11 +19,13 @@ namespace Arkanoid
     /// </summary>
     public partial class WindowTextBox : Window
     {
-        public WindowTextBox(string description, string title = "")
+        public WindowTextBox(string description, string title = "", Point position = new Point())
         {
             InitializeComponent();
             Description.Text = description;
             Title = title;
+            Left = position.X - Width / 2.0;
+            Top = position.Y - Height / 2.0;
             ShowDialog();
         }
 

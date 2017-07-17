@@ -74,7 +74,8 @@ namespace Arkanoid
         {
             if (scoreboard.IsAScoreBeaten(score))
             {
-                WindowTextBox wtb = new WindowTextBox("Enter your name", "score: " + score + "!");
+                Point wtbPosition = new Point(Left + Width / 2.0, Top + Height / 2.0);
+                WindowTextBox wtb = new WindowTextBox("Enter your name", "score: " + score + "!", wtbPosition);
                 string name = wtb.TextBox.Text;
 
                 ScoreboardItem item = new ScoreboardItem(name, score);
@@ -228,16 +229,45 @@ namespace Arkanoid
             return button;
         }
 
+        //MENU IN GAME 
+        private void ShowTheMenuInGame()
+        {
+            GamePause();
+            menuInGameGrid.Visibility = Visibility.Visible;
+        }
+        private void HideTheMenuInGame()
+        {
+            menuInGameGrid.Visibility = Visibility.Hidden;
+            GameResume();
+        }
+        private void buttonIGGBackToGame_Click(object sender, RoutedEventArgs e)
+        {
+            HideTheMenuInGame();
+        }
+        private void buttonIGGBackToMainMenu_Click(object sender, RoutedEventArgs e)
+        {
+            HideTheMenuInGame();
+            FinishGame();
+        }
+
         //GAME 
-        public void StartGame()
+        private void GamePause()
+        {
+            CompositionTarget.Rendering -= MainLoopFunction;
+        }
+        private void GameResume()
         {
             CompositionTarget.Rendering += MainLoopFunction;
+        }
+        public void StartGame()
+        {
+            GameResume();
             CreateWalls();
             GameControl.StartGame(ref gameGrid, ref platform, ref balls, ref bricks, ref bonuses);
         }
         public void FinishGame()
         {
-            CompositionTarget.Rendering -= MainLoopFunction;
+            GamePause();
             SaveScore(GameControl.Score);
 
             walls.Clear();
@@ -274,6 +304,8 @@ namespace Arkanoid
             DoElementsActions();
             if (GameControl.IsTheGameOver())
                 FinishGame();
+            if (Keyboard.IsKeyDown(Key.Escape))
+                ShowTheMenuInGame();
         }
 
         private void RemoveElement<T>(List<T> listOfElements, T element) where T : UIElement

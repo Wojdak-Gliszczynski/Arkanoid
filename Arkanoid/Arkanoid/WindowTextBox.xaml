@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Arkanoid"
-        mc:Ignorable="d" Height="160" Width="200" ResizeMode="NoResize" KeyDown="KeyPressed">
+        mc:Ignorable="d" Height="160" Width="200" ResizeMode="NoResize" KeyDown="KeyPressed" HorizontalAlignment="Center" VerticalAlignment="Center">
     <Grid KeyDown="KeyPressed">
         <TextBox x:Name="TextBox" HorizontalAlignment="Center" Height="23" Margin="0,71,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="172" KeyDown="KeyPressed"/>
         <Button x:Name="AcceptButton" Content="OK" HorizontalAlignment="Center" Margin="0,99,0,0" VerticalAlignment="Top" Width="74" KeyDown="KeyPressed" Click="AcceptButton_Click"/>
