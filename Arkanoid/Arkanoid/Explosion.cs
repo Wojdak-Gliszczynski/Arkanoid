@@ -23,7 +23,7 @@ namespace Arkanoid
                   96, 48
                   )
         {
-            Rect collisionsArea = new Rect(Margin.Left, Margin.Top, Width, Height);
+            Rect collisionsArea = new Rect(Margin.Left + 1, Margin.Top + 1, Width - 2, Height - 2);
             foreach (Brick brick in bricks)
             {
                 if (brick.Type != Brick.BrickType.Indestructible && brick != brokenBrick && !destroyedBricks.Contains(brick))
