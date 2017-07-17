@@ -66,7 +66,7 @@ namespace Arkanoid
                         case BrickType.Normal:
                             GameControl.AddPoints(25);
                             destroyedBricks.Add(this);
-                            break;
+                            return;
                         case BrickType.Reinforced:
                             GameControl.AddPoints(10);
                             _typeID = BrickType.Normal;
@@ -76,12 +76,12 @@ namespace Arkanoid
                             GameControl.AddPoints(15);
                             destroyedBricks.Add(this);
                             balls.Add(new Ball(grid, ball.Speed, ballAngle, Margin.Left + Width / 2 - 8, Margin.Top + Height / 2 - 8));
-                            break;
+                            return;
                         case BrickType.TNT:
                             GameControl.AddPoints(5);
                             destroyedBricks.Add(this);
                             Explosion explosion = new Explosion(grid, balls, bricks, this, destroyedBricks);
-                            break;
+                            return;
                     }
                 }
             }
