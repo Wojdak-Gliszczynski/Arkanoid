@@ -64,18 +64,17 @@ namespace Arkanoid
             if (mousePosition.X > 0 && mousePosition.X < 800)
                 _lastMouseX = mousePosition.X;
 
-            if (_lastMouseX < platformX - _speed / 2.0)
-            {
+            if (_lastMouseX <= platformX - _speed)
                 MoveWithBalls(balls, -_speed);
-                if (_platformLeft.Margin.Left < 160)
-                    MoveWithBalls(balls, 160 - (_platformLeft.Margin.Left));
-            }
-            else if (_lastMouseX > platformX + _speed / 2.0)
-            { 
+            else if (_lastMouseX >= platformX + _speed)
                 MoveWithBalls(balls, _speed);
-                if (_platformRight.Margin.Left + _platformRight.Width > 640)
-                    MoveWithBalls(balls, 640 - (_platformRight.Margin.Left + _platformRight.Width));
-            }
+            else //Move less pixels than the platform speed
+                MoveWithBalls(balls, _lastMouseX - platformX);
+
+            if (_platformLeft.Margin.Left < 160)
+                MoveWithBalls(balls, 160 - (_platformLeft.Margin.Left));
+            else if (_platformRight.Margin.Left + _platformRight.Width > 640)
+                MoveWithBalls(balls, 640 - (_platformRight.Margin.Left + _platformRight.Width));
 
             if (leftMouseButtonPressed)
                 PeelGluedBalls(balls);
