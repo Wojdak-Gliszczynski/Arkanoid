@@ -81,8 +81,9 @@ namespace Arkanoid
             Angle = angle;
             _sizeDegree = sizeDegree;
             AdjustSize();
+            _prevCollisionArea = new Rect(Margin.Left, Margin.Top, Width, Height);
         }
-        
+
         //RESIZE FUNCTIONS 
         private void ChangeSize(double scale)
         {
