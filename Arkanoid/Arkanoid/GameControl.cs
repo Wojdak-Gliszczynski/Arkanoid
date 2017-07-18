@@ -29,6 +29,9 @@ namespace Arkanoid
             _life = 3;
             _level = 1;
 
+            Uri pathToBackground = new Uri("./Graphics/background-0.png", UriKind.Relative);
+            TransformingImage background = new TransformingImage(pathToBackground, grid, 160, 0, 480, 600);
+
             _labelScore = new Label();
             _labelScore.Margin = new Thickness(8, 16, 0, 0);
             grid.Children.Add(_labelScore);
