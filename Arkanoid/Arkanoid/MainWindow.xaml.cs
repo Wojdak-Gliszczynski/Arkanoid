@@ -27,7 +27,7 @@ namespace Arkanoid
         private Label[] scoreboardNo;
         private Label[] scoreboardNames;
         private Label[] scoreboardScore;
-        private List<Border> scoreboardBorders;
+        private List<Rectangle> scoreboardRectangles;
         private Button buttonScoreboardBack;
 
         private Platform platform;
@@ -48,7 +48,7 @@ namespace Arkanoid
             scoreboard = new Scoreboard();
             LoadScoreboard();
 
-            scoreboardBorders = new List<Border>();
+            scoreboardRectangles = new List<Rectangle>();
 
             CreateTextBoxCol(ref scoreboardNo, 10, Width / 2.0 - 171, Height / 2.0 - 152, 24, 24);
             for (int i = 0; i < scoreboardNo.Length; i++)
@@ -140,7 +140,7 @@ namespace Arkanoid
                 item.Visibility = Visibility.Visible;
             foreach (Label item in scoreboardScore)
                 item.Visibility = Visibility.Visible;
-            foreach (Border item in scoreboardBorders)
+            foreach (Rectangle item in scoreboardRectangles)
                 item.Visibility = Visibility.Visible;
             buttonScoreboardBack.Visibility = Visibility.Visible;
         }
@@ -152,7 +152,7 @@ namespace Arkanoid
                 item.Visibility = Visibility.Hidden;
             foreach (Label item in scoreboardScore)
                 item.Visibility = Visibility.Hidden;
-            foreach (Border item in scoreboardBorders)
+            foreach (Rectangle item in scoreboardRectangles)
                 item.Visibility = Visibility.Hidden;
             buttonScoreboardBack.Visibility = Visibility.Hidden;
         }
@@ -182,12 +182,12 @@ namespace Arkanoid
             label = new Label[count];
             for (int i = 0; i < count; i++)
             {
+                Rectangle rect = CreateRectangle(x, y + i * (tbHeight - 1), tbWidth, tbHeight);
+                scoreboardRectangles.Add(rect);
+                menuGrid.Children.Add(rect);
+
                 label[i] = CreateLabel("", x, y + i * (tbHeight - 1), tbWidth, tbHeight);
                 menuGrid.Children.Add(label[i]);
-
-                Border border = CreateBorder(x, y + i * (tbHeight - 1), tbWidth, tbHeight);
-                scoreboardBorders.Add(border);
-                menuGrid.Children.Add(border);
             }
         }
         private Label CreateLabel(string text, double x, double y, double tbWidth, double tbHeight)
@@ -202,18 +202,21 @@ namespace Arkanoid
 
             return label;
         }
-        private Border CreateBorder(double x, double y, double bWidth, double bHeight)
+        private Rectangle CreateRectangle(double x, double y, double bWidth, double bHeight)
         {
-            Border border = new Border();
-            border.Margin = new Thickness((int)x, (int)y, 0.0, 0.0);
-            border.BorderThickness = new Thickness(1, 1, 1, 1);
-            border.BorderBrush = Brushes.Black;
-            border.HorizontalAlignment = HorizontalAlignment.Left;
-            border.VerticalAlignment = VerticalAlignment.Top;
-            border.Width = (int)bWidth;
-            border.Height = (int)bHeight;
+            Rectangle rect = new Rectangle();
+            rect.Margin = new Thickness((int)x, (int)y, 0.0, 0.0);
+            //rect.BorderThickness = new Thickness(1, 1, 1, 1);
+            rect.StrokeThickness = 1;
+            rect.Stroke = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+            rect.Fill = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+            //rect.BorderBrush = Brushes.Black;
+            rect.HorizontalAlignment = HorizontalAlignment.Left;
+            rect.VerticalAlignment = VerticalAlignment.Top;
+            rect.Width = (int)bWidth;
+            rect.Height = (int)bHeight;
 
-            return border;
+            return rect;
         }
         private Button CreateButton(string text, RoutedEventHandler clickEvent, double x, double y, double bWidth, double bHeight)
         {

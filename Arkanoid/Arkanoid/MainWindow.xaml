@@ -8,7 +8,9 @@
         Title="Arkanoid" Width="813" Height="631" ResizeMode="NoResize">
     <Grid x:Name="menuGrid" Height="600" Width="800">
         <!--Main Menu-->
-        <Button x:Name="buttonStartGame" Content="Start Game" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Margin="0,0,0,128" Height="32" Click="buttonStartGame_Click"/>
+        <Image x:Name="menuBackground" Margin="0,0,0,0" VerticalAlignment="Top" Source="./Graphics/background_menu.png" Opacity="0.65"/>
+        <Image x:Name="imageTitle" Height="91" Margin="262,64,263,0" VerticalAlignment="Top" Source="./Graphics/title.png"/>
+        <Button x:Name="buttonStartGame" Content="Start Game" VerticalAlignment="Center" Margin="350,220,350,348" Height="32" Click="buttonStartGame_Click"/>
         <Button x:Name="buttonScoreboard" Content="High scores" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Margin="0" Height="32" Click="buttonScoreboard_Click"/>
         <Button x:Name="buttonQuit" Content="Exit game" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Margin="350,128,350,0" Height="32" Click="buttonQuit_Click"/>
 
