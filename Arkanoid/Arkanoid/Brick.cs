@@ -65,20 +65,27 @@ namespace Arkanoid
                     {
                         case BrickType.Normal:
                             GameControl.AddPoints(25);
+                            GameControl.PlaySound(GameControl.Sound.BreakBrick);
                             destroyedBricks.Add(this);
                             return;
                         case BrickType.Reinforced:
                             GameControl.AddPoints(10);
+                            GameControl.PlaySound(GameControl.Sound.BreakReinforcement);
                             _typeID = BrickType.Normal;
                             Source = new BitmapImage(GetPath(_typeID, _colorID));
                             break;
+                        case BrickType.Indestructible:
+                            GameControl.PlaySound(GameControl.Sound.BouncingBall);
+                            break;
                         case BrickType.Ball:
                             GameControl.AddPoints(15);
+                            GameControl.PlaySound(GameControl.Sound.ExtraBall);
                             destroyedBricks.Add(this);
                             balls.Add(new Ball(grid, ball.Speed, ballAngle, Margin.Left + Width / 2 - 8, Margin.Top + Height / 2 - 8));
                             return;
                         case BrickType.TNT:
                             GameControl.AddPoints(5);
+                            GameControl.PlaySound(GameControl.Sound.Explosion);
                             destroyedBricks.Add(this);
                             Explosion explosion = new Explosion(grid, balls, bricks, this, destroyedBricks);
                             return;

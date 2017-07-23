@@ -58,10 +58,11 @@ namespace Arkanoid
         {
             if (_id == BonusName.Random)
                 _id = (BonusName)_rand.Next(1, _maxBonusID + 1);
-
+            
             switch (_id)
             {
                 case BonusName.DoubleBall:
+                    GameControl.PlaySound(GameControl.Sound.ExtraBall);
                     int ballsCount = balls.Count;
                     for (int i = 0; i < ballsCount; i++)
                         balls.Add(new Ball(balls[i]));
@@ -99,6 +100,7 @@ namespace Arkanoid
                     break;
                 case BonusName.ExtraPoints:
                     GameControl.AddPoints(1000);
+                    GameControl.PlaySound(GameControl.Sound.ExtraPoints);
                     break;
                 case BonusName.Skull:
                     foreach (Ball ball in balls)

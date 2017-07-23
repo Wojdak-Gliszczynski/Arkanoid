@@ -107,8 +107,10 @@ namespace Arkanoid
                         percent = -0.8;
 
                     ball.Angle = ((3.0 / 2.0) * Math.PI) + percent * 0.5 * Math.PI;
-
                     ball.SetPosition(ball.Margin.Left, _platformMiddle.Margin.Top - ball.Height);
+
+                    if (!ball.IsGlued())
+                        GameControl.PlaySound(GameControl.Sound.BouncingBall);
                 }
             }
         }

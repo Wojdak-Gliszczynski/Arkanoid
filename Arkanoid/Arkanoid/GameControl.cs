@@ -20,6 +20,9 @@ namespace Arkanoid
         static private Label _labelLevel;
 
         static public int Score { get { return _score; } }
+
+        public enum Sound
+            { BouncingBall, BreakBrick, BreakReinforcement, Explosion, ExtraBall, ExtraPoints, NextLevel, Record }
         //-------------------------------------------------------
         static public void StartGame
             (ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses)
@@ -98,6 +101,7 @@ namespace Arkanoid
             (ref Grid grid, ref Platform platform, ref List<Ball> balls, ref List<Brick> bricks, ref List<Bonus> bonuses)
         {
             _level++;
+            PlaySound(Sound.NextLevel);
             return (StartLevel(ref grid, ref platform, ref balls, ref bricks, ref bonuses) ? true : false);
         }
 
@@ -126,6 +130,27 @@ namespace Arkanoid
         static public bool IsTheGameOver()
         {
             return _gameOver;
+        }
+
+        static public void PlaySound(Sound sound)
+        {
+            string path = "./../../Sounds/";
+            switch (sound)
+            {
+                case Sound.BouncingBall: path += "bouncing_ball";  break;
+                case Sound.BreakBrick: path += "break_brick"; break;
+                case Sound.BreakReinforcement: path += "break_reinforcement"; break;
+                case Sound.Explosion: path += "explosion"; break;
+                case Sound.ExtraBall: path += "extra_ball"; break;
+                case Sound.ExtraPoints: path += "extra_points"; break;
+                case Sound.NextLevel: path += "next_level"; break;
+                case Sound.Record: path += "record"; break;
+            }
+            path += ".mp3";
+            
+            var player = new System.Windows.Media.MediaPlayer();
+            player.Open(new Uri(path, UriKind.Relative));
+            player.Play();
         }
     }
 }

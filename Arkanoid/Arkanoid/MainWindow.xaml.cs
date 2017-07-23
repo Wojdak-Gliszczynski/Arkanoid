@@ -43,6 +43,7 @@ namespace Arkanoid
         }
         //-------------------------------------------------------
         //MAIN MENU 
+        //Scoreboard functions 
         private void ScoreboardInit()
         {
             scoreboard = new Scoreboard();
@@ -74,6 +75,8 @@ namespace Arkanoid
         {
             if (scoreboard.IsAScoreBeaten(score))
             {
+                GameControl.PlaySound(GameControl.Sound.Record);
+
                 Point wtbPosition = new Point(Left + Width / 2.0, Top + Height / 2.0);
                 WindowTextBox wtb = new WindowTextBox("Enter your name", "score: " + score + "!", wtbPosition);
                 string name = wtb.TextBox.Text;
@@ -327,7 +330,10 @@ namespace Arkanoid
 
                 foreach (Rect wall in walls)
                     if (ball.HasCollisionWith(wall))
+                    {
                         ball.Bounce(wall);
+                        GameControl.PlaySound(GameControl.Sound.BouncingBall);
+                    }
 
                 if (ball.IsDestroyed())
                     destroyedBalls.Add(ball);
