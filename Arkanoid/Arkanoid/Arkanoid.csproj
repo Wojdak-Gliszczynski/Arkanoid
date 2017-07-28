@@ -200,6 +200,7 @@
     <Resource Include="Graphics\background_menu.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Music\Funky.wav" />
     <Content Include="Sounds\extra_ball.mp3" />
     <Content Include="Sounds\bouncing_ball.mp3" />
     <Content Include="Sounds\break_brick.mp3" />

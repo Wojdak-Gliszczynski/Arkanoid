@@ -29,6 +29,7 @@ namespace Arkanoid
         private Label[] scoreboardScore;
         private List<Rectangle> scoreboardRectangles;
         private Button buttonScoreboardBack;
+        private MediaPlayer backgroundMusic;
 
         private Platform platform;
         private List<Ball> balls;
@@ -40,6 +41,10 @@ namespace Arkanoid
         {
             InitializeComponent();
             ScoreboardInit();
+            backgroundMusic = new MediaPlayer();
+            backgroundMusic.Open(new Uri("./../../Music/Funky.wav", UriKind.Relative));
+            backgroundMusic.MediaEnded += MediaEnded;
+            backgroundMusic.Volume = 0.4;
         }
         //-------------------------------------------------------
         //MAIN MENU 
@@ -257,6 +262,15 @@ namespace Arkanoid
         }
 
         //GAME 
+        private void MediaEnded(object Sender, EventArgs e)
+        {
+            StartPlayingMusic();
+        }
+        private void StartPlayingMusic()
+        {
+            backgroundMusic.Position = TimeSpan.Zero;
+            backgroundMusic.Play();
+        }
         private void GamePause()
         {
             CompositionTarget.Rendering -= MainLoopFunction;
@@ -269,6 +283,7 @@ namespace Arkanoid
         {
             GameResume();
             CreateWalls();
+            StartPlayingMusic();
             GameControl.StartGame(ref gameGrid, ref platform, ref balls, ref bricks, ref bonuses);
         }
         public void FinishGame()
@@ -278,6 +293,8 @@ namespace Arkanoid
 
             walls.Clear();
             gameGrid.Children.Clear();
+
+            backgroundMusic.Pause();
 
             RefreshScoreboard();
             ShowTheMainMenu();
